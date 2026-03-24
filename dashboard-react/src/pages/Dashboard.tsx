@@ -1,10 +1,10 @@
 import {
-  Phone,
-  PhoneOff,
+  MessageSquare,
   CheckCircle,
   UserPlus,
   Clock,
-  PhoneCall,
+  MessageCircle,
+  Zap,
 } from 'lucide-react';
 import { KPICard } from '../components/ui/KPICard';
 import { Badge } from '../components/ui/Badge';
@@ -21,134 +21,135 @@ import {
   Legend,
 } from 'recharts';
 
-// Mock data for charts - last 7 days
+// Mock data — last 7 days
 const chartData = [
-  { name: 'Mon', callVolume: 145, outcomes: 128, talkTime: 42, answered: 138 },
-  { name: 'Tue', callVolume: 198, outcomes: 175, talkTime: 58, answered: 185 },
-  { name: 'Wed', callVolume: 112, outcomes: 98, talkTime: 31, answered: 105 },
-  { name: 'Thu', callVolume: 223, outcomes: 201, talkTime: 67, answered: 215 },
-  { name: 'Wed', callVolume: 178, outcomes: 156, talkTime: 52, answered: 168 },
-  { name: 'Sat', callVolume: 89, outcomes: 78, talkTime: 24, answered: 82 },
-  { name: 'Sun', callVolume: 45, outcomes: 38, talkTime: 12, answered: 40 },
+  { name: 'Mon', conversations: 42, resolved: 38, handoffs: 2, botOnly: 36 },
+  { name: 'Tue', conversations: 67, resolved: 61, handoffs: 4, botOnly: 57 },
+  { name: 'Wed', conversations: 35, resolved: 31, handoffs: 1, botOnly: 30 },
+  { name: 'Thu', conversations: 81, resolved: 74, handoffs: 5, botOnly: 69 },
+  { name: 'Fri', conversations: 59, resolved: 54, handoffs: 3, botOnly: 51 },
+  { name: 'Sat', conversations: 28, resolved: 25, handoffs: 1, botOnly: 24 },
+  { name: 'Sun', conversations: 14, resolved: 12, handoffs: 0, botOnly: 12 },
 ];
 
-// Call outcomes breakdown data
-const outcomeData = [
-  { name: 'Mon', promiseToPay: 38, humanEscalation: 3, refused: 7, noResolution: 12 },
-  { name: 'Tue', promiseToPay: 52, humanEscalation: 5, refused: 9, noResolution: 15 },
-  { name: 'Wed', promiseToPay: 29, humanEscalation: 2, refused: 5, noResolution: 10 },
-  { name: 'Thu', promiseToPay: 61, humanEscalation: 4, refused: 11, noResolution: 18 },
-  { name: 'Fri', promiseToPay: 48, humanEscalation: 3, refused: 8, noResolution: 14 },
-  { name: 'Sat', promiseToPay: 24, humanEscalation: 1, refused: 3, noResolution: 7 },
-  { name: 'Sun', promiseToPay: 12, humanEscalation: 0, refused: 2, noResolution: 4 },
+// Resolution type breakdown
+const resolutionData = [
+  { name: 'Mon', botResolved: 36, humanHandoff: 2, serverCheck: 8, endpointTrigger: 14 },
+  { name: 'Tue', botResolved: 57, humanHandoff: 4, serverCheck: 13, endpointTrigger: 22 },
+  { name: 'Wed', botResolved: 30, humanHandoff: 1, serverCheck: 6, endpointTrigger: 10 },
+  { name: 'Thu', botResolved: 69, humanHandoff: 5, serverCheck: 18, endpointTrigger: 31 },
+  { name: 'Fri', botResolved: 51, humanHandoff: 3, serverCheck: 12, endpointTrigger: 24 },
+  { name: 'Sat', botResolved: 24, humanHandoff: 1, serverCheck: 5, endpointTrigger: 9 },
+  { name: 'Sun', botResolved: 12, humanHandoff: 0, serverCheck: 2, endpointTrigger: 4 },
 ];
 
-// Mock data - will be replaced with API calls
 const kpiData = [
   {
-    title: 'Total Calls',
-    value: '1,247',
-    subtitle: 'vs last month',
-    icon: Phone,
+    title: 'Total Conversations',
+    value: '326',
+    subtitle: 'vs last week',
+    icon: MessageSquare,
+    iconBgColor: 'bg-green-100',
+    iconColor: 'text-green-600',
+    trend: { value: 18.4, isPositive: true },
+  },
+  {
+    title: 'Bot Resolution Rate',
+    value: '91.4%',
+    subtitle: 'resolved without human',
+    icon: CheckCircle,
     iconBgColor: 'bg-accent-100',
     iconColor: 'text-accent-600',
-    trend: { value: 12.5, isPositive: true },
+    trend: { value: 3.1, isPositive: true },
   },
   {
-    title: 'Connected',
-    value: '89.2%',
-    subtitle: 'connection rate',
-    icon: PhoneCall,
-    iconBgColor: 'bg-green-100',
-    iconColor: 'text-green-600',
-    trend: { value: 2.3, isPositive: true },
-  },
-  {
-    title: 'Resolutions',
-    value: '89',
-    subtitle: 'successful outcomes',
-    icon: CheckCircle,
-    iconBgColor: 'bg-green-100',
-    iconColor: 'text-green-600',
-  },
-  {
-    title: 'Pending Payments',
-    value: '234',
-    subtitle: 'awaiting follow-up',
+    title: 'Avg. Response Time',
+    value: '1.2s',
+    subtitle: 'bot reply latency',
     icon: Clock,
+    iconBgColor: 'bg-purple-100',
+    iconColor: 'text-purple-500',
+    trend: { value: 0.3, isPositive: true },
+  },
+  {
+    title: 'Open Tickets',
+    value: '17',
+    subtitle: 'awaiting resolution',
+    icon: MessageCircle,
     iconBgColor: 'bg-amber-100',
     iconColor: 'text-amber-600',
   },
   {
-    title: 'Human Escalations',
-    value: '18',
-    subtitle: '2.0% needs follow-up',
+    title: 'Human Handoffs',
+    value: '16',
+    subtitle: '4.9% escalation rate',
     subtitleColor: 'text-amber-600',
     icon: UserPlus,
     iconBgColor: 'bg-red-100',
     iconColor: 'text-red-500',
   },
   {
-    title: 'Talk Time',
-    value: '53.2h',
-    subtitle: 'This billing period',
-    icon: PhoneOff,
-    iconBgColor: 'bg-purple-100',
-    iconColor: 'text-purple-500',
+    title: 'Actions Triggered',
+    value: '114',
+    subtitle: 'endpoint calls this week',
+    icon: Zap,
+    iconBgColor: 'bg-blue-100',
+    iconColor: 'text-blue-500',
+    trend: { value: 22.7, isPositive: true },
   },
 ];
 
-const recentCalls = [
+const resolutionSummary = [
+  { label: 'Bot Resolved', count: 279, color: 'bg-green-500', bgClass: 'bg-green-50' },
+  { label: 'Human Handoff', count: 16, color: 'bg-red-500', bgClass: 'bg-red-50' },
+  { label: 'Server Checks', count: 64, color: 'bg-blue-500', bgClass: 'bg-blue-50' },
+  { label: 'Endpoint Triggers', count: 114, color: 'bg-purple-500', bgClass: 'bg-purple-50' },
+];
+
+const recentConversations = [
   {
     id: '1',
-    status: 'completed',
-    phone: '+40 744 987 654',
-    assistant: 'Debt Collection',
-    outcome: 'promise',
+    status: 'resolved',
+    contact: '+34 612 345 678',
+    chatbot: 'Horeca Support Bot',
+    outcome: 'resolved',
     date: 'Today, 11:15',
-    variables: [
-      { name: 'promise_date', value: 'Mar 5, 2026', type: 'promise_date' as const },
-      { name: 'amount', value: '€245.00', type: 'amount' as const },
-      { name: 'payment_method', value: 'Card', type: 'other' as const },
-    ],
+    summary: 'POS system restart triggered via /restart-pos endpoint. Server status confirmed OK.',
   },
   {
     id: '2',
-    status: 'completed',
-    phone: '+40 756 123 789',
-    assistant: 'Debt Collection',
-    outcome: 'escalate',
-    date: 'Yesterday, 16:22',
-    variables: [
-      { name: 'escalation_reason', value: 'Legal threat', type: 'escalation_reason' as const },
-      { name: 'amount', value: '€1,250.00', type: 'amount' as const },
-      { name: 'priority', value: 'High', type: 'priority' as const },
-    ],
+    status: 'handoff',
+    contact: '+34 698 123 456',
+    chatbot: 'Horeca Support Bot',
+    outcome: 'handoff',
+    date: 'Today, 09:42',
+    summary: 'Database connection issue — escalated to human agent after 3 failed auto-recovery attempts.',
+  },
+  {
+    id: '3',
+    status: 'resolved',
+    contact: '+34 611 987 654',
+    chatbot: 'Horeca Support Bot',
+    outcome: 'resolved',
+    date: 'Yesterday, 16:30',
+    summary: 'License validation check ran successfully. Invoice sent via webhook.',
   },
 ];
 
-const callOutcomes = [
-  { label: 'Promise to Pay', count: 234, color: 'bg-green-500', percent: 26.2, bgClass: 'bg-green-50' },
-  { label: 'Escalate to Human', count: 18, color: 'bg-red-500', percent: 2.0, bgClass: 'bg-red-50' },
-  { label: 'Refused / Dispute', count: 45, color: 'bg-amber-500', percent: 5.0, bgClass: 'bg-amber-50' },
-  { label: 'No Resolution', count: 89, color: 'bg-slate-400', percent: 10.0, bgClass: 'bg-slate-50' },
-];
-
-const outcomeIcons: Record<string, { variant: 'success' | 'danger' | 'warning' | 'info' | 'default'; label: string }> = {
-  promise: { variant: 'success', label: 'Promise' },
-  escalate: { variant: 'danger', label: 'Escalate' },
-  refused: { variant: 'warning', label: 'Refused' },
-  callback: { variant: 'info', label: 'Call Back' },
-  none: { variant: 'default', label: 'None' },
+const outcomeConfig: Record<string, { variant: 'success' | 'danger' | 'warning' | 'info' | 'default'; label: string }> = {
+  resolved: { variant: 'success', label: 'Resolved' },
+  handoff: { variant: 'danger', label: 'Handoff' },
+  pending: { variant: 'warning', label: 'Pending' },
+  triggered: { variant: 'info', label: 'Triggered' },
 };
 
-type ChartLineKey = 'callVolume' | 'outcomes' | 'talkTime' | 'answered';
-type OutcomeLineKey = 'promiseToPay' | 'humanEscalation' | 'refused' | 'noResolution';
+type ChartLineKey = 'conversations' | 'resolved' | 'handoffs' | 'botOnly';
+type ResolutionLineKey = 'botResolved' | 'humanHandoff' | 'serverCheck' | 'endpointTrigger';
 
 export function Dashboard() {
-  const [expandedCall, setExpandedCall] = useState<string | null>(null);
-  const [activeLines, setActiveLines] = useState<ChartLineKey[]>(['callVolume', 'answered']);
-  const [activeOutcomeLines, setActiveOutcomeLines] = useState<OutcomeLineKey[]>(['promiseToPay', 'humanEscalation']);
+  const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  const [activeLines, setActiveLines] = useState<ChartLineKey[]>(['conversations', 'resolved']);
+  const [activeResLines, setActiveResLines] = useState<ResolutionLineKey[]>(['botResolved', 'endpointTrigger']);
 
   const toggleLine = (key: ChartLineKey) => {
     setActiveLines(prev =>
@@ -156,24 +157,24 @@ export function Dashboard() {
     );
   };
 
-  const toggleOutcomeLine = (key: OutcomeLineKey) => {
-    setActiveOutcomeLines(prev =>
+  const toggleResLine = (key: ResolutionLineKey) => {
+    setActiveResLines(prev =>
       prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
     );
   };
 
   const lineConfig: { key: ChartLineKey; label: string; color: string }[] = [
-    { key: 'callVolume', label: 'Call Volume', color: '#3b82f6' },
-    { key: 'answered', label: 'Answered Calls', color: '#10b981' },
-    { key: 'talkTime', label: 'Talk Time (min)', color: '#8b5cf6' },
-    { key: 'outcomes', label: 'Successful Outcomes', color: '#f59e0b' },
+    { key: 'conversations', label: 'Total Conversations', color: '#3b82f6' },
+    { key: 'resolved', label: 'Resolved', color: '#10b981' },
+    { key: 'botOnly', label: 'Bot-Only', color: '#8b5cf6' },
+    { key: 'handoffs', label: 'Human Handoffs', color: '#ef4444' },
   ];
 
-  const outcomeLineConfig: { key: OutcomeLineKey; label: string; color: string }[] = [
-    { key: 'promiseToPay', label: 'Promise to Pay', color: '#10b981' },
-    { key: 'humanEscalation', label: 'Human Escalation', color: '#ef4444' },
-    { key: 'refused', label: 'Refused/Dispute', color: '#f59e0b' },
-    { key: 'noResolution', label: 'No Resolution', color: '#94a3b8' },
+  const resLineConfig: { key: ResolutionLineKey; label: string; color: string }[] = [
+    { key: 'botResolved', label: 'Bot Resolved', color: '#10b981' },
+    { key: 'humanHandoff', label: 'Human Handoff', color: '#ef4444' },
+    { key: 'serverCheck', label: 'Server Checks', color: '#3b82f6' },
+    { key: 'endpointTrigger', label: 'Endpoint Triggers', color: '#8b5cf6' },
   ];
 
   return (
@@ -187,12 +188,11 @@ export function Dashboard() {
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-        {/* Call Volume Chart */}
+        {/* Conversation Volume Chart */}
         <div className="bg-white rounded-lg p-4 lg:p-5 border border-slate-200">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-slate-700">Call Metrics (Last 7 Days)</h2>
+            <h2 className="text-sm font-semibold text-slate-700">Conversation Metrics (Last 7 Days)</h2>
           </div>
-          {/* Toggle buttons */}
           <div className="flex flex-wrap gap-2 mb-4">
             {lineConfig.map(line => (
               <button
@@ -243,23 +243,22 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Call Outcomes Breakdown */}
+        {/* Resolution Breakdown Chart */}
         <div className="bg-white rounded-lg p-4 lg:p-5 border border-slate-200">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-slate-700">Call Outcomes Breakdown</h2>
+            <h2 className="text-sm font-semibold text-slate-700">Resolution Breakdown</h2>
           </div>
-          {/* Toggle buttons */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {outcomeLineConfig.map(line => (
+            {resLineConfig.map(line => (
               <button
                 key={line.key}
-                onClick={() => toggleOutcomeLine(line.key)}
+                onClick={() => toggleResLine(line.key)}
                 className={`px-3 py-1.5 text-xs font-medium rounded-full border transition ${
-                  activeOutcomeLines.includes(line.key)
+                  activeResLines.includes(line.key)
                     ? 'border-transparent text-white'
                     : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                 }`}
-                style={activeOutcomeLines.includes(line.key) ? { backgroundColor: line.color } : {}}
+                style={activeResLines.includes(line.key) ? { backgroundColor: line.color } : {}}
               >
                 {line.label}
               </button>
@@ -267,7 +266,7 @@ export function Dashboard() {
           </div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={outcomeData}>
+              <LineChart data={resolutionData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} stroke="#94a3b8" />
                 <YAxis tick={{ fontSize: 12 }} stroke="#94a3b8" />
@@ -280,8 +279,8 @@ export function Dashboard() {
                   }}
                 />
                 <Legend />
-                {outcomeLineConfig.map(line =>
-                  activeOutcomeLines.includes(line.key) && (
+                {resLineConfig.map(line =>
+                  activeResLines.includes(line.key) && (
                     <Line
                       key={line.key}
                       type="monotone"
@@ -300,26 +299,26 @@ export function Dashboard() {
         </div>
       </div>
 
-      {/* Outcome Summary Cards */}
+      {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-        {callOutcomes.map((outcome, i) => (
+        {resolutionSummary.map((item, i) => (
           <div
             key={i}
-            className={`flex items-center justify-between p-3 rounded-lg ${outcome.bgClass} border border-slate-100`}
+            className={`flex items-center justify-between p-3 rounded-lg ${item.bgClass} border border-slate-100`}
           >
             <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${outcome.color}`} />
-              <span className="text-sm text-slate-700">{outcome.label}</span>
+              <div className={`w-2 h-2 rounded-full ${item.color}`} />
+              <span className="text-sm text-slate-700">{item.label}</span>
             </div>
-            <span className="text-sm font-semibold text-slate-800">{outcome.count}</span>
+            <span className="text-sm font-semibold text-slate-800">{item.count}</span>
           </div>
         ))}
       </div>
 
-      {/* Recent Calls */}
+      {/* Recent Conversations */}
       <div className="bg-white rounded-lg border border-slate-200">
         <div className="flex items-center justify-between p-4 border-b border-slate-100">
-          <h2 className="text-sm font-semibold text-slate-700">Recent Calls</h2>
+          <h2 className="text-sm font-semibold text-slate-700">Recent Conversations</h2>
           <a href="#" className="text-accent-600 font-medium hover:underline text-sm">
             View all →
           </a>
@@ -329,75 +328,47 @@ export function Dashboard() {
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50/50">
                 <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-8"></th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Phone
-                </th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Assistant
-                </th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Outcome
-                </th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  Date
-                </th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Contact</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Chatbot</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Outcome</th>
+                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
               </tr>
             </thead>
             <tbody>
-              {recentCalls.map((call) => (
+              {recentConversations.map((conv) => (
                 <>
                   <tr
-                    key={call.id}
+                    key={conv.id}
                     className="border-b border-slate-50 cursor-pointer hover:bg-slate-50"
-                    onClick={() => setExpandedCall(expandedCall === call.id ? null : call.id)}
+                    onClick={() => setExpandedRow(expandedRow === conv.id ? null : conv.id)}
                   >
                     <td className="py-3 px-4">
                       <ChevronRight
                         className={`w-3 h-3 text-slate-300 transition-transform ${
-                          expandedCall === call.id ? 'rotate-90' : ''
+                          expandedRow === conv.id ? 'rotate-90' : ''
                         }`}
                       />
                     </td>
                     <td className="py-3 px-4">
-                      <Badge variant="success">Completed</Badge>
-                    </td>
-                    <td className="py-3 px-4 text-sm text-slate-700">{call.phone}</td>
-                    <td className="py-3 px-4 text-sm text-accent-600 font-medium">{call.assistant}</td>
-                    <td className="py-3 px-4">
-                      <Badge variant={outcomeIcons[call.outcome].variant}>
-                        {outcomeIcons[call.outcome].label}
+                      <Badge variant={conv.status === 'resolved' ? 'success' : 'danger'}>
+                        {conv.status === 'resolved' ? 'Resolved' : 'Handoff'}
                       </Badge>
                     </td>
-                    <td className="py-3 px-4 text-sm text-slate-500">{call.date}</td>
+                    <td className="py-3 px-4 text-sm text-slate-700">{conv.contact}</td>
+                    <td className="py-3 px-4 text-sm text-accent-600 font-medium">{conv.chatbot}</td>
+                    <td className="py-3 px-4">
+                      <Badge variant={outcomeConfig[conv.outcome].variant}>
+                        {outcomeConfig[conv.outcome].label}
+                      </Badge>
+                    </td>
+                    <td className="py-3 px-4 text-sm text-slate-500">{conv.date}</td>
                   </tr>
-                  {expandedCall === call.id && call.variables && (
-                    <tr key={`${call.id}-details`} className="bg-slate-50">
+                  {expandedRow === conv.id && (
+                    <tr key={`${conv.id}-details`} className="bg-slate-50">
                       <td colSpan={6} className="px-4 py-3">
-                        <div className="text-xs text-slate-500 mb-2 font-medium">
-                          Extracted Variables:
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {call.variables.map((v, i) => (
-                            <span
-                              key={i}
-                              className={`px-2 py-1 border rounded text-xs ${
-                                v.type === 'promise_date'
-                                  ? 'bg-green-50 border-green-200 text-green-700'
-                                  : v.type === 'escalation_reason'
-                                  ? 'bg-red-50 border-red-200 text-red-700'
-                                  : v.type === 'priority'
-                                  ? 'bg-amber-50 border-amber-200 text-amber-700'
-                                  : 'bg-white border-slate-200 text-slate-700'
-                              }`}
-                            >
-                              <span className="text-slate-400">{v.name}:</span>{' '}
-                              <span className="font-medium">{v.value}</span>
-                            </span>
-                          ))}
-                        </div>
+                        <p className="text-xs text-slate-500 mb-1 font-medium">Summary</p>
+                        <p className="text-xs text-slate-700">{conv.summary}</p>
                       </td>
                     </tr>
                   )}

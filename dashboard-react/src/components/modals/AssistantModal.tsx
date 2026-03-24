@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Bot, Wrench, Settings2, Phone, User, MessageSquare } from 'lucide-react';
+import { X, Bot, Wrench, Settings2, UserPlus, MessageSquare } from 'lucide-react';
 
 interface AssistantModalProps {
   isOpen: boolean;
@@ -9,47 +9,43 @@ interface AssistantModalProps {
 
 type TabKey = 'general' | 'tools' | 'advanced';
 
-const ttsProviders = [
-  { id: 'cartesia', name: 'Cartesia' },
-  { id: 'minimax', name: 'Minimax' },
-  { id: 'elevenlabs', name: 'ElevenLabs' },
-];
-
-const voicesByProvider: Record<string, string[]> = {
-  cartesia: ['Luna', 'Mason', 'Sofia', 'Atlas', 'River', 'Olive'],
-  minimax: ['Emma', 'James', 'Olivia', 'William', 'Ava', 'Benjamin'],
-  elevenlabs: ['Rachel', 'Domi', 'Bella', 'Antoni', 'Elli', 'Josh'],
-};
-
 const webhooks = [
   { id: 'none', name: 'None' },
-  { id: 'wh-1', name: 'Post-call Analytics' },
+  { id: 'wh-1', name: 'Post-conversation Analytics' },
   { id: 'wh-2', name: 'CRM Sync' },
   { id: 'wh-3', name: 'Slack Notification' },
 ];
 
+const languages = ['Spanish', 'English', 'Portuguese', 'French', 'Italian'];
+
 export function AssistantModal({ isOpen, onClose, assistantId }: AssistantModalProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('general');
-  const [whoSpeaksFirst, setWhoSpeaksFirst] = useState<'agent' | 'customer'>('agent');
-  const [initialMessage, setInitialMessage] = useState('Hello! This is an automated call from Telerenta regarding your account.');
-  const [prompt, setPrompt] = useState(`You are a professional debt collection assistant. Your goal is to:
-- Politely remind the customer of their outstanding balance
-- Negotiate a payment arrangement if needed
-- Extract promise-to-pay dates when possible
-- Escalate to human agent if the customer requests it or becomes hostile
+  const [greetingMessage, setGreetingMessage] = useState(
+    'Hola! Soy el asistente de soporte de Horeca Software. ¿En qué puedo ayudarte hoy?'
+  );
+  const [prompt, setPrompt] = useState(
+    `You are a support assistant for Horeca Software. Your goals:
+- Diagnose POS and server issues reported by restaurant clients
+- Trigger the appropriate API endpoints to restart services or check server health
+- Escalate to a human agent when the issue cannot be resolved automatically
+- Always reply in the same language the customer uses
 
-Always remain calm and professional. Never make threats or use aggressive language.`);
-  const [ttsProvider, setTtsProvider] = useState('cartesia');
-  const [selectedVoice, setSelectedVoice] = useState('Luna');
-  const [coldTransferEnabled, setColdTransferEnabled] = useState(true);
-  const [whenToTransfer, setWhenToTransfer] = useState('Transfer the call when the customer asks for a real assistant');
-  const [transferNumber, setTransferNumber] = useState('+40 744 123 456');
-  const [endCallEnabled, setEndCallEnabled] = useState(true);
-  const [whenToEnd, setWhenToEnd] = useState('End the call when the customer hangs up or becomes abusive');
-  const [dtmfEnabled, setDtmfEnabled] = useState(false);
-  const [dtmfPrompt, setDtmfPrompt] = useState('Press 1 to confirm your payment date, or press 2 to speak with an agent');
-  const [postCallWebhook, setPostCallWebhook] = useState('wh-1');
-  const [reengagementMessage, setReengagementMessage] = useState('Hi {name}, we tried to reach you about your account. Please call us back at your earliest convenience.');
+Available actions: check_server_status, restart_pos, validate_license, create_support_ticket`
+  );
+  const [language, setLanguage] = useState('Spanish');
+  const [humanHandoffEnabled, setHumanHandoffEnabled] = useState(true);
+  const [whenToHandoff, setWhenToHandoff] = useState(
+    'Hand off to a human agent when the customer requests it, or when 3 automated resolution attempts have failed'
+  );
+  const [endConvEnabled, setEndConvEnabled] = useState(true);
+  const [whenToEnd, setWhenToEnd] = useState(
+    'End the conversation when the issue is resolved and the customer confirms satisfaction'
+  );
+  const [postConvWebhook, setPostConvWebhook] = useState('wh-1');
+  const [followUpMessage, setFollowUpMessage] = useState(
+    'Hola {name}, ¿pudiste resolver el problema con tu sistema? Estamos aquí si necesitas más ayuda.'
+  );
+  const [responseTimeout, setResponseTimeout] = useState(24);
 
   if (!isOpen) return null;
 
@@ -67,7 +63,7 @@ Always remain calm and professional. Never make threats or use aggressive langua
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
           <h2 className="text-lg font-semibold text-slate-800">
-            {isNew ? 'Create Assistant' : 'Edit Assistant'}
+            {isNew ? 'Create Agent' : 'Edit Agent'}
           </h2>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 p-1">
             <X className="w-5 h-5" />
@@ -99,53 +95,38 @@ Always remain calm and professional. Never make threats or use aggressive langua
           {activeTab === 'general' && (
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Assistant Name</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Agent Name</label>
                 <input
                   type="text"
-                  defaultValue="Debt Collection"
+                  defaultValue={isNew ? '' : 'Horeca Support Bot'}
+                  placeholder="e.g. Horeca Support Bot"
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Who speaks first?</label>
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="whoSpeaksFirst"
-                      checked={whoSpeaksFirst === 'agent'}
-                      onChange={() => setWhoSpeaksFirst('agent')}
-                      className="w-4 h-4 text-accent-500"
-                    />
-                    <Bot className="w-4 h-4 text-slate-400" />
-                    <span className="text-sm text-slate-700">Agent</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="whoSpeaksFirst"
-                      checked={whoSpeaksFirst === 'customer'}
-                      onChange={() => setWhoSpeaksFirst('customer')}
-                      className="w-4 h-4 text-accent-500"
-                    />
-                    <User className="w-4 h-4 text-slate-400" />
-                    <span className="text-sm text-slate-700">Customer</span>
-                  </label>
-                </div>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Language</label>
+                <select
+                  value={language}
+                  onChange={e => setLanguage(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white"
+                >
+                  {languages.map(lang => (
+                    <option key={lang} value={lang}>{lang}</option>
+                  ))}
+                </select>
               </div>
 
-              {whoSpeaksFirst === 'agent' && (
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Initial Message</label>
-                  <textarea
-                    value={initialMessage}
-                    onChange={e => setInitialMessage(e.target.value)}
-                    rows={2}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 resize-none"
-                  />
-                </div>
-              )}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Greeting Message</label>
+                <textarea
+                  value={greetingMessage}
+                  onChange={e => setGreetingMessage(e.target.value)}
+                  rows={2}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 resize-none"
+                />
+                <p className="text-xs text-slate-400 mt-1">Sent when a new conversation starts</p>
+              </div>
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">System Prompt</label>
@@ -156,133 +137,66 @@ Always remain calm and professional. Never make threats or use aggressive langua
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 font-mono resize-y"
                   style={{ minHeight: '150px' }}
                 />
-                <p className="text-xs text-slate-400 mt-1">Define the assistant's behavior and goals</p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">TTS Provider</label>
-                <select
-                  value={ttsProvider}
-                  onChange={e => {
-                    setTtsProvider(e.target.value);
-                    setSelectedVoice(voicesByProvider[e.target.value][0]);
-                  }}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white"
-                >
-                  {ttsProviders.map(provider => (
-                    <option key={provider.id} value={provider.id}>{provider.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Voice</label>
-                <select
-                  value={selectedVoice}
-                  onChange={e => setSelectedVoice(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white"
-                >
-                  {voicesByProvider[ttsProvider].map(voice => (
-                    <option key={voice} value={voice}>{voice}</option>
-                  ))}
-                </select>
+                <p className="text-xs text-slate-400 mt-1">Define the chatbot's behavior, goals, and available actions</p>
               </div>
             </div>
           )}
 
           {activeTab === 'tools' && (
             <div className="space-y-6">
+              {/* Human Handoff */}
               <div className="bg-slate-50 rounded-lg p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-slate-500" />
-                    <span className="text-sm font-medium text-slate-700">Cold Transfer</span>
+                    <UserPlus className="w-4 h-4 text-slate-500" />
+                    <span className="text-sm font-medium text-slate-700">Human Handoff</span>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={coldTransferEnabled}
-                      onChange={e => setColdTransferEnabled(e.target.checked)}
+                      checked={humanHandoffEnabled}
+                      onChange={e => setHumanHandoffEnabled(e.target.checked)}
                       className="sr-only peer"
                     />
                     <div className="w-9 h-5 bg-slate-200 peer-focus:ring-2 peer-focus:ring-accent-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-accent-500"></div>
                   </label>
                 </div>
-                {coldTransferEnabled && (
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-xs font-medium text-slate-600 mb-1">When to transfer</label>
-                      <textarea
-                        value={whenToTransfer}
-                        onChange={e => setWhenToTransfer(e.target.value)}
-                        rows={2}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 resize-none bg-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-slate-600 mb-1">Transfer Number</label>
-                      <input
-                        type="text"
-                        value={transferNumber}
-                        onChange={e => setTransferNumber(e.target.value)}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="bg-slate-50 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <MessageSquare className="w-4 h-4 text-slate-500" />
-                    <span className="text-sm font-medium text-slate-700">End Call</span>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={endCallEnabled}
-                      onChange={e => setEndCallEnabled(e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div className="w-9 h-5 bg-slate-200 peer-focus:ring-2 peer-focus:ring-accent-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-accent-500"></div>
-                  </label>
-                </div>
-                {endCallEnabled && (
+                {humanHandoffEnabled && (
                   <div>
-                    <label className="block text-xs font-medium text-slate-600 mb-1">When to end</label>
+                    <label className="block text-xs font-medium text-slate-600 mb-1">When to hand off</label>
                     <textarea
-                      value={whenToEnd}
-                      onChange={e => setWhenToEnd(e.target.value)}
-                      rows={2}
+                      value={whenToHandoff}
+                      onChange={e => setWhenToHandoff(e.target.value)}
+                      rows={3}
                       className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 resize-none bg-white"
                     />
                   </div>
                 )}
               </div>
 
+              {/* End Conversation */}
               <div className="bg-slate-50 rounded-lg p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Settings2 className="w-4 h-4 text-slate-500" />
-                    <span className="text-sm font-medium text-slate-700">DTMF (Keypad Input)</span>
+                    <MessageSquare className="w-4 h-4 text-slate-500" />
+                    <span className="text-sm font-medium text-slate-700">End Conversation</span>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={dtmfEnabled}
-                      onChange={e => setDtmfEnabled(e.target.checked)}
+                      checked={endConvEnabled}
+                      onChange={e => setEndConvEnabled(e.target.checked)}
                       className="sr-only peer"
                     />
                     <div className="w-9 h-5 bg-slate-200 peer-focus:ring-2 peer-focus:ring-accent-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-accent-500"></div>
                   </label>
                 </div>
-                {dtmfEnabled && (
+                {endConvEnabled && (
                   <div>
-                    <label className="block text-xs font-medium text-slate-600 mb-1">DTMF Prompt</label>
+                    <label className="block text-xs font-medium text-slate-600 mb-1">When to end</label>
                     <textarea
-                      value={dtmfPrompt}
-                      onChange={e => setDtmfPrompt(e.target.value)}
+                      value={whenToEnd}
+                      onChange={e => setWhenToEnd(e.target.value)}
                       rows={2}
                       className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 resize-none bg-white"
                     />
@@ -295,47 +209,45 @@ Always remain calm and professional. Never make threats or use aggressive langua
           {activeTab === 'advanced' && (
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Post-call Webhook</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Post-conversation Webhook</label>
                 <select
-                  value={postCallWebhook}
-                  onChange={e => setPostCallWebhook(e.target.value)}
+                  value={postConvWebhook}
+                  onChange={e => setPostConvWebhook(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white"
                 >
                   {webhooks.map(wh => (
                     <option key={wh.id} value={wh.id}>{wh.name}</option>
                   ))}
                 </select>
-                <p className="text-xs text-slate-400 mt-1">Trigger a webhook after each call completes</p>
+                <p className="text-xs text-slate-400 mt-1">Triggered when a conversation ends</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Re-engagement Text Message</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Follow-up Message</label>
                 <textarea
-                  value={reengagementMessage}
-                  onChange={e => setReengagementMessage(e.target.value)}
+                  value={followUpMessage}
+                  onChange={e => setFollowUpMessage(e.target.value)}
                   rows={3}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 resize-none"
                 />
-                <p className="text-xs text-slate-400 mt-1">Sent when call is unanswered. Use {'{name}'} for customer name placeholder.</p>
+                <p className="text-xs text-slate-400 mt-1">
+                  Sent if customer goes silent. Use {'{name}'} for contact name.
+                </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Max Call Duration (min)</label>
-                  <input
-                    type="number"
-                    defaultValue={10}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Silence Timeout (sec)</label>
-                  <input
-                    type="number"
-                    defaultValue={30}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                  Conversation Timeout (hours)
+                </label>
+                <input
+                  type="number"
+                  value={responseTimeout}
+                  onChange={e => setResponseTimeout(Number(e.target.value))}
+                  min={1}
+                  max={72}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+                />
+                <p className="text-xs text-slate-400 mt-1">Auto-close conversation after this many hours of inactivity</p>
               </div>
             </div>
           )}
@@ -347,7 +259,7 @@ Always remain calm and professional. Never make threats or use aggressive langua
             Cancel
           </button>
           <button className="px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-lg text-sm font-medium transition">
-            {isNew ? 'Create Assistant' : 'Save Changes'}
+            {isNew ? 'Create Agent' : 'Save Changes'}
           </button>
         </div>
       </div>

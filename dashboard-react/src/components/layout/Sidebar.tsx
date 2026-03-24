@@ -1,7 +1,5 @@
 import {
   LayoutDashboard,
-  Phone,
-  Megaphone,
   Bot,
   MessageSquare,
   Database,
@@ -11,8 +9,8 @@ import {
   BarChart3,
   ChevronRight,
   Users,
-  Radio,
-  LineChart,
+  Zap,
+  MessageCircle,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -40,33 +38,29 @@ const navCategories: NavCategory[] = [
     label: 'Analytics',
     items: [
       { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-      { id: 'insights', label: 'Call Insights', icon: LineChart },
-      { id: 'custom-dashboards', label: 'Custom Dashboards', icon: BarChart3 },
+      { id: 'insights', label: 'Message Insights', icon: BarChart3 },
     ],
   },
   {
-    label: 'Operations',
+    label: 'Conversations',
     items: [
-      { id: 'calls', label: 'Calls', icon: Phone },
-      { id: 'campaigns', label: 'Campaigns', icon: Megaphone },
-      { id: 'customers', label: 'Customers', icon: Users },
+      { id: 'conversations', label: 'Conversations', icon: MessageCircle },
+      { id: 'customers', label: 'Contacts', icon: Users },
     ],
   },
   {
-    label: 'AI Configuration',
+    label: 'Chatbot Config',
     items: [
-      { id: 'assistants', label: 'Assistants', icon: Bot },
+      { id: 'assistants', label: 'Support Agents', icon: Bot },
       { id: 'knowledge-bases', label: 'Knowledge Bases', icon: Database },
-      { id: 'prompt-snippets', label: 'Prompt Snippets', icon: FileText },
+      { id: 'prompt-snippets', label: 'Message Templates', icon: FileText },
+      { id: 'tools', label: 'Tools & Actions', icon: Zap },
     ],
   },
   {
     label: 'Channels',
     items: [
-      { id: 'conversations', label: 'Conversations', icon: MessageSquare, badge: 'Soon' },
-      { id: 'web-widget', label: 'Web Widget', icon: Radio },
-      { id: 'phone-numbers', label: 'Phone Numbers', icon: Phone },
-      { id: 'whatsapp', label: 'WhatsApp', icon: MessageSquare, badge: 'Soon' },
+      { id: 'whatsapp', label: 'WhatsApp', icon: MessageSquare },
     ],
   },
   {
@@ -101,12 +95,12 @@ export function Sidebar({ currentPage, onNavigate, isOpen, onClose }: SidebarPro
         {/* Organization */}
         <div className="p-4 border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-accent-500 to-accent-700 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">T</span>
+            <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-700 rounded-lg flex items-center justify-center">
+              <MessageSquare className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-slate-800 truncate">Telerenta.ro</p>
-              <p className="text-xs text-slate-500">Organization</p>
+              <p className="text-sm font-semibold text-slate-800 truncate">Horeca Support</p>
+              <p className="text-xs text-slate-500">WhatsApp Chatbot</p>
             </div>
             <ChevronRight className="w-4 h-4 text-slate-400" />
           </div>

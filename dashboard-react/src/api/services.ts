@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import type { Conversation, WhatsAppSender, WhatsAppTemplate, KnowledgeBase, Webhook, PhoneNumber } from '../types';
+import type { Conversation, WhatsAppSender, WhatsAppTemplate, WhatsAppFlow, KnowledgeBase, Webhook, PhoneNumber } from '../types';
 
 // Conversations
 export const conversationsApi = {
@@ -44,6 +44,30 @@ export const whatsappApi = {
   createTemplate: async (template: Partial<WhatsAppTemplate> & { body: string }) => {
     const { data } = await apiClient.post<WhatsAppTemplate>('/whatsapp/templates', template);
     return data;
+  },
+
+  getFlows: async () => {
+    const { data } = await apiClient.get<WhatsAppFlow[]>('/whatsapp/flows');
+    return data;
+  },
+
+  getFlow: async (id: string) => {
+    const { data } = await apiClient.get<WhatsAppFlow>(`/whatsapp/flows/${id}`);
+    return data;
+  },
+
+  createFlow: async (flow: Partial<WhatsAppFlow>) => {
+    const { data } = await apiClient.post<WhatsAppFlow>('/whatsapp/flows', flow);
+    return data;
+  },
+
+  updateFlow: async (id: string, flow: Partial<WhatsAppFlow>) => {
+    const { data } = await apiClient.patch<WhatsAppFlow>(`/whatsapp/flows/${id}`, flow);
+    return data;
+  },
+
+  deleteFlow: async (id: string) => {
+    await apiClient.delete(`/whatsapp/flows/${id}`);
   },
 };
 

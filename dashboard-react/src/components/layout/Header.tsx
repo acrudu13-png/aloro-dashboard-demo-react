@@ -43,11 +43,11 @@ export function Header({ onMenuClick }: HeaderProps) {
         {/* User */}
         <div className="flex items-center gap-2 lg:gap-3 lg:pl-3 lg:border-l border-slate-200">
           <div className="hidden sm:block text-right">
-            <p className="text-sm font-medium text-slate-700">Alexandru Crudu</p>
-            <p className="text-xs text-slate-400">Telerenta.ro</p>
+            <p className="text-sm font-medium text-slate-700">James Wilson</p>
+            <p className="text-xs text-slate-400">Meridian Financial</p>
           </div>
           <button className="w-9 h-9 bg-accent-100 rounded-full flex items-center justify-center hover:bg-accent-200 transition">
-            <span className="text-accent-600 font-semibold text-sm">AC</span>
+            <span className="text-accent-600 font-semibold text-sm">JW</span>
           </button>
         </div>
       </div>

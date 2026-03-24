@@ -1,52 +1,50 @@
 import { apiClient } from './client';
-import type { Assistant } from '../types';
+import type { SupportAgent } from '../types';
 
-export interface CreateAssistantDto {
+export interface CreateAgentDto {
   name: string;
   description?: string;
-  type: Assistant['type'];
   language: string;
-  voice: string;
   systemPrompt?: string;
-  firstMessage?: string;
+  greetingMessage?: string;
+  model?: string;
   temperature?: number;
-  tools?: string[];
+  toolIds?: string[];
+  knowledgeBaseIds?: string[];
 }
 
-export interface UpdateAssistantDto extends Partial<CreateAssistantDto> {
-  status?: Assistant['status'];
+export interface UpdateAgentDto extends Partial<CreateAgentDto> {
+  status?: SupportAgent['status'];
+  activeFlowId?: string;
 }
 
 export const assistantsApi = {
   getAll: async () => {
-    const { data } = await apiClient.get<Assistant[]>('/assistants');
+    const { data } = await apiClient.get<SupportAgent[]>('/agents');
     return data;
   },
 
   getById: async (id: string) => {
-    const { data } = await apiClient.get<Assistant>(`/assistants/${id}`);
+    const { data } = await apiClient.get<SupportAgent>(`/agents/${id}`);
     return data;
   },
 
-  create: async (dto: CreateAssistantDto) => {
-    const { data } = await apiClient.post<Assistant>('/assistants', dto);
+  create: async (dto: CreateAgentDto) => {
+    const { data } = await apiClient.post<SupportAgent>('/agents', dto);
     return data;
   },
 
-  update: async (id: string, dto: UpdateAssistantDto) => {
-    const { data } = await apiClient.patch<Assistant>(`/assistants/${id}`, dto);
+  update: async (id: string, dto: UpdateAgentDto) => {
+    const { data } = await apiClient.patch<SupportAgent>(`/agents/${id}`, dto);
     return data;
   },
 
   delete: async (id: string) => {
-    await apiClient.delete(`/assistants/${id}`);
+    await apiClient.delete(`/agents/${id}`);
   },
 
-  // Test assistant with a message
   test: async (id: string, message: string) => {
-    const { data } = await apiClient.post<{ response: string }>(`/assistants/${id}/test`, {
-      message,
-    });
+    const { data } = await apiClient.post<{ response: string }>(`/agents/${id}/test`, { message });
     return data;
   },
 };

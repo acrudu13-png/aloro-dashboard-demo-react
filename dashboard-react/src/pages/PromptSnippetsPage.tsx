@@ -25,7 +25,7 @@ const mockSnippets: PromptSnippet[] = [
   {
     id: '1',
     name: 'company_info',
-    content: 'Telerenta.ro is Romania\'s leading device rental platform, offering flexible rental plans for smartphones, tablets, and laptops. We\'ve been serving customers since 2019 with over 50,000 satisfied clients nationwide.',
+    content: 'Meridian Financial Services is a consumer lending and accounts receivable management company based in Austin, TX. We\'ve been helping customers manage their financial obligations since 2017, serving over 80,000 clients nationwide.',
     category: 'company',
     lastUpdated: 'Feb 20, 2026',
     usageCount: 5,
@@ -33,7 +33,7 @@ const mockSnippets: PromptSnippet[] = [
   {
     id: '2',
     name: 'payment_instructions',
-    content: 'To make a payment, please visit telerenta.ro/plata and enter your contract number. You can pay by card, bank transfer, or at any PayPoint location. Payment is typically processed within 24 hours.',
+    content: 'To make a payment, please visit meridianfs.com/pay and enter your account number. You can pay by debit card, credit card, or ACH bank transfer. Payments are typically processed within 1 business day.',
     category: 'instructions',
     lastUpdated: 'Feb 18, 2026',
     usageCount: 3,
@@ -41,7 +41,7 @@ const mockSnippets: PromptSnippet[] = [
   {
     id: '3',
     name: 'legal_disclaimer',
-    content: 'This call may be recorded for quality assurance and training purposes. By continuing this conversation, you acknowledge that you have been informed of the recording. Your personal data will be processed in accordance with GDPR regulations.',
+    content: 'This call may be recorded for quality assurance and training purposes. By continuing this conversation, you acknowledge that you have been informed of the recording. Your personal data will be processed in accordance with applicable federal and state privacy laws.',
     category: 'legal',
     lastUpdated: 'Feb 15, 2026',
     usageCount: 8,
@@ -49,7 +49,7 @@ const mockSnippets: PromptSnippet[] = [
   {
     id: '4',
     name: 'hours_of_operation',
-    content: 'Our customer service team is available Monday through Friday from 9:00 AM to 6:00 PM, and Saturday from 10:00 AM to 2:00 PM. We are closed on Sundays and public holidays.',
+    content: 'Our customer service team is available Monday through Friday from 8:00 AM to 7:00 PM CT, and Saturday from 9:00 AM to 3:00 PM CT. We are closed on Sundays and federal holidays.',
     category: 'company',
     lastUpdated: 'Feb 10, 2026',
     usageCount: 4,
@@ -57,23 +57,23 @@ const mockSnippets: PromptSnippet[] = [
   {
     id: '5',
     name: 'late_fee_policy',
-    content: 'A late payment fee of 5% of the outstanding amount is applied after the due date. Additional fees may apply for payments more than 30 days overdue. Please contact us if you\'re experiencing payment difficulties.',
+    content: 'A late payment fee of $25 or 5% of the outstanding amount (whichever is greater) is applied after the due date. Additional fees may apply for accounts more than 30 days past due. Please contact us if you\'re experiencing payment difficulties.',
     category: 'legal',
     lastUpdated: 'Feb 12, 2026',
     usageCount: 2,
   },
   {
     id: '6',
-    name: 'return_instructions',
-    content: 'To return your device, please ensure it\'s in good condition with all accessories. Schedule a pickup at telerenta.ro/return or visit any of our 12 drop-off locations across Romania. A return confirmation will be sent within 48 hours.',
+    name: 'dispute_process',
+    content: 'To dispute a charge, submit your request in writing to disputes@meridianfs.com or call 1-800-555-0175. We will investigate and respond within 30 business days in accordance with the Fair Debt Collection Practices Act.',
     category: 'instructions',
     lastUpdated: 'Feb 22, 2026',
     usageCount: 2,
   },
   {
     id: '7',
-    name: 'upgrade_options',
-    content: 'You may be eligible to upgrade to a newer device model. Check available options in your account dashboard or ask your agent about current upgrade promotions and any applicable fees.',
+    name: 'payment_plan_options',
+    content: 'You may qualify for an extended payment plan or a reduced settlement offer. Ask your agent about available options based on your account standing and payment history. Plans can be set up online at meridianfs.com/plans.',
     category: 'custom',
     lastUpdated: 'Feb 24, 2026',
     usageCount: 1,
@@ -81,7 +81,7 @@ const mockSnippets: PromptSnippet[] = [
   {
     id: '8',
     name: 'contact_info',
-    content: 'You can reach us by phone at 0800 123 456 (toll-free), by email at suport@telerenta.ro, or via WhatsApp at +40 744 123 456. Our website is www.telerenta.ro.',
+    content: 'You can reach us by phone at 1-800-555-0175 (toll-free), by email at support@meridianfs.com, or via WhatsApp at +1 (512) 555-0163. Our website is www.meridianfs.com.',
     category: 'company',
     lastUpdated: 'Feb 8, 2026',
     usageCount: 6,

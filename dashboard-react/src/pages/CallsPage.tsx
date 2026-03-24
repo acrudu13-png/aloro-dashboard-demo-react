@@ -4,10 +4,10 @@ import { Badge } from '../components/ui/Badge';
 
 // Mock data
 const mockCalls = [
-  { id: '1', status: 'completed', phone: '+40 744 987 654', assistant: 'Debt Collection', duration: '4:32', outcome: 'promise', date: 'Today, 11:15' },
-  { id: '2', status: 'completed', phone: '+40 756 123 789', assistant: 'Debt Collection', duration: '3:15', outcome: 'escalate', date: 'Yesterday, 16:22' },
-  { id: '3', status: 'no-answer', phone: '+40 722 456 789', assistant: 'Sales Outreach', duration: '-', outcome: 'none', date: 'Yesterday, 14:05' },
-  { id: '4', status: 'completed', phone: '+40 733 890 123', assistant: 'Debt Collection', duration: '5:47', outcome: 'promise', date: 'Feb 23, 09:30' },
+  { id: '1', status: 'completed', phone: '+1 (512) 555-0147', assistant: 'Debt Collection', duration: '4:32', outcome: 'promise', date: 'Today, 11:15' },
+  { id: '2', status: 'completed', phone: '+1 (512) 555-0231', assistant: 'Debt Collection', duration: '3:15', outcome: 'escalate', date: 'Yesterday, 16:22' },
+  { id: '3', status: 'no-answer', phone: '+1 (737) 555-0389', assistant: 'Sales Outreach', duration: '-', outcome: 'none', date: 'Yesterday, 14:05' },
+  { id: '4', status: 'completed', phone: '+1 (512) 555-0462', assistant: 'Debt Collection', duration: '5:47', outcome: 'promise', date: 'Feb 23, 09:30' },
 ];
 
 const outcomeConfig: Record<string, { variant: 'success' | 'danger' | 'warning' | 'info' | 'default'; label: string }> = {

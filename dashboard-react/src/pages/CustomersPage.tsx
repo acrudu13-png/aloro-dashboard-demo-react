@@ -7,63 +7,63 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Phone,
+  MessageSquare,
   Mail,
   User,
   MoreHorizontal,
   Ban,
   CheckCircle,
-  Clock,
+  Eye,
+  Send,
 } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
 
-interface Customer {
+interface WhatsAppCustomer {
   id: string;
   name: string | null;
   phone: string;
   email: string | null;
-  totalCalls: number;
-  answeredCalls: number;
-  answerRate: number;
-  avgDuration: string;
-  lastContact: string;
-  status: 'active' | 'do_not_call' | 'callback' | 'completed';
+  totalMessages: number;
+  conversations: number;
+  avgResponseTime: string;
+  lastMessage: string;
+  status: 'active' | 'opted_out' | 'blocked' | 'pending';
 }
 
-const mockCustomers: Customer[] = [
-  { id: '1', name: 'Maria Popescu', phone: '+40 744 123 456', email: 'maria.popescu@email.ro', totalCalls: 12, answeredCalls: 10, answerRate: 83.3, avgDuration: '4:32', lastContact: 'Feb 25, 2026', status: 'active' },
-  { id: '2', name: 'Ion Ionescu', phone: '+40 756 234 567', email: 'ion.ionescu@email.ro', totalCalls: 8, answeredCalls: 6, answerRate: 75.0, avgDuration: '3:15', lastContact: 'Feb 24, 2026', status: 'callback' },
-  { id: '3', name: null, phone: '+40 722 345 678', email: null, totalCalls: 5, answeredCalls: 2, answerRate: 40.0, avgDuration: '2:45', lastContact: 'Feb 23, 2026', status: 'active' },
-  { id: '4', name: 'Elena Dumitrescu', phone: '+40 733 456 789', email: 'elena.d@email.ro', totalCalls: 15, answeredCalls: 14, answerRate: 93.3, avgDuration: '5:12', lastContact: 'Feb 25, 2026', status: 'completed' },
-  { id: '5', name: 'Alexandru Marin', phone: '+40 744 567 890', email: 'alex.marin@email.ro', totalCalls: 3, answeredCalls: 0, answerRate: 0, avgDuration: '-', lastContact: 'Feb 20, 2026', status: 'do_not_call' },
-  { id: '6', name: 'Cristina Stoica', phone: '+40 755 678 901', email: 'cristina.s@email.ro', totalCalls: 7, answeredCalls: 5, answerRate: 71.4, avgDuration: '3:48', lastContact: 'Feb 22, 2026', status: 'active' },
-  { id: '7', name: null, phone: '+40 766 789 012', email: null, totalCalls: 4, answeredCalls: 3, answerRate: 75.0, avgDuration: '2:30', lastContact: 'Feb 21, 2026', status: 'callback' },
-  { id: '8', name: 'Mihai Radu', phone: '+40 777 890 123', email: 'mihai.radu@email.ro', totalCalls: 9, answeredCalls: 7, answerRate: 77.8, avgDuration: '4:05', lastContact: 'Feb 24, 2026', status: 'active' },
-  { id: '9', name: 'Ana Vasilescu', phone: '+40 788 901 234', email: 'ana.v@email.ro', totalCalls: 6, answeredCalls: 5, answerRate: 83.3, avgDuration: '3:22', lastContact: 'Feb 23, 2026', status: 'completed' },
-  { id: '10', name: 'Dan Nicolae', phone: '+40 799 012 345', email: null, totalCalls: 2, answeredCalls: 1, answerRate: 50.0, avgDuration: '1:45', lastContact: 'Feb 19, 2026', status: 'do_not_call' },
-  { id: '11', name: 'Ioana Georgescu', phone: '+40 711 123 456', email: 'ioana.g@email.ro', totalCalls: 11, answeredCalls: 9, answerRate: 81.8, avgDuration: '4:50', lastContact: 'Feb 25, 2026', status: 'active' },
-  { id: '12', name: null, phone: '+40 722 234 567', email: null, totalCalls: 1, answeredCalls: 1, answerRate: 100.0, avgDuration: '5:30', lastContact: 'Feb 18, 2026', status: 'completed' },
-  { id: '13', name: 'Florin Tudor', phone: '+40 733 345 678', email: 'florin.t@email.ro', totalCalls: 4, answeredCalls: 2, answerRate: 50.0, avgDuration: '2:15', lastContact: 'Feb 20, 2026', status: 'callback' },
-  { id: '14', name: 'Laura Stan', phone: '+40 744 456 789', email: 'laura.stan@email.ro', totalCalls: 8, answeredCalls: 6, answerRate: 75.0, avgDuration: '3:35', lastContact: 'Feb 22, 2026', status: 'active' },
-  { id: '15', name: 'Ciprian Neagu', phone: '+40 755 567 890', email: null, totalCalls: 3, answeredCalls: 2, answerRate: 66.7, avgDuration: '2:58', lastContact: 'Feb 21, 2026', status: 'active' },
+const mockCustomers: WhatsAppCustomer[] = [
+  { id: '1', name: 'Andrei Popescu', phone: '+40 721 234 567', email: 'andrei.popescu@email.com', totalMessages: 156, conversations: 12, avgResponseTime: '1.2s', lastMessage: 'Mar 24, 2026', status: 'active' },
+  { id: '2', name: 'Mihai Ionescu', phone: '+40 722 345 678', email: 'mihai.ionescu@email.com', totalMessages: 89, conversations: 8, avgResponseTime: '2.5s', lastMessage: 'Mar 23, 2026', status: 'pending' },
+  { id: '3', name: null, phone: '+40 723 456 789', email: null, totalMessages: 34, conversations: 5, avgResponseTime: '1.8s', lastMessage: 'Mar 22, 2026', status: 'active' },
+  { id: '4', name: 'Elena Dumitrescu', phone: '+40 724 567 890', email: 'elena.dumitrescu@email.com', totalMessages: 245, conversations: 15, avgResponseTime: '0.9s', lastMessage: 'Mar 24, 2026', status: 'active' },
+  { id: '5', name: 'Radu Stanescu', phone: '+40 725 678 901', email: 'radu.stanescu@email.com', totalMessages: 12, conversations: 3, avgResponseTime: '-', lastMessage: 'Mar 18, 2026', status: 'blocked' },
+  { id: '6', name: 'Ioana Georgescu', phone: '+40 726 789 012', email: 'ioana.georgescu@email.com', totalMessages: 78, conversations: 7, avgResponseTime: '1.5s', lastMessage: 'Mar 21, 2026', status: 'active' },
+  { id: '7', name: null, phone: '+40 727 890 123', email: null, totalMessages: 45, conversations: 4, avgResponseTime: '2.1s', lastMessage: 'Mar 20, 2026', status: 'pending' },
+  { id: '8', name: 'Alexandru Marinescu', phone: '+40 728 901 234', email: 'alex.marinescu@email.com', totalMessages: 112, conversations: 9, avgResponseTime: '1.3s', lastMessage: 'Mar 23, 2026', status: 'active' },
+  { id: '9', name: 'Cristina Petrescu', phone: '+40 729 012 345', email: 'cristina.petrescu@email.com', totalMessages: 67, conversations: 6, avgResponseTime: '1.7s', lastMessage: 'Mar 22, 2026', status: 'active' },
+  { id: '10', name: 'Florin Constantin', phone: '+40 730 123 456', email: null, totalMessages: 8, conversations: 2, avgResponseTime: '3.2s', lastMessage: 'Mar 15, 2026', status: 'opted_out' },
+  { id: '11', name: 'Ana-Maria Stoica', phone: '+40 731 234 567', email: 'ana.stoica@email.com', totalMessages: 189, conversations: 11, avgResponseTime: '1.1s', lastMessage: 'Mar 24, 2026', status: 'active' },
+  { id: '12', name: null, phone: '+40 732 345 678', email: null, totalMessages: 23, conversations: 1, avgResponseTime: '0.8s', lastMessage: 'Mar 14, 2026', status: 'active' },
+  { id: '13', name: 'Dan Vladulescu', phone: '+40 733 456 789', email: 'dan.vladulescu@email.com', totalMessages: 56, conversations: 4, avgResponseTime: '2.8s', lastMessage: 'Mar 19, 2026', status: 'pending' },
+  { id: '14', name: 'Maria Neagu', phone: '+40 734 567 890', email: 'maria.neagu@email.com', totalMessages: 98, conversations: 8, avgResponseTime: '1.4s', lastMessage: 'Mar 21, 2026', status: 'active' },
+  { id: '15', name: 'Ciprian Dobre', phone: '+40 735 678 901', email: null, totalMessages: 41, conversations: 3, avgResponseTime: '1.9s', lastMessage: 'Mar 20, 2026', status: 'active' },
 ];
 
-type SortKey = keyof Customer;
+type SortKey = keyof WhatsAppCustomer;
 type SortDirection = 'asc' | 'desc';
 
-const statusConfig: Record<Customer['status'], { label: string; variant: 'success' | 'danger' | 'warning' | 'info' | 'default' }> = {
+const statusConfig: Record<WhatsAppCustomer['status'], { label: string; variant: 'success' | 'danger' | 'warning' | 'info' | 'default' }> = {
   active: { label: 'Active', variant: 'success' },
-  do_not_call: { label: 'Do Not Call', variant: 'danger' },
-  callback: { label: 'Call Back', variant: 'warning' },
-  completed: { label: 'Completed', variant: 'info' },
+  opted_out: { label: 'Opted Out', variant: 'default' },
+  blocked: { label: 'Blocked', variant: 'danger' },
+  pending: { label: 'Pending', variant: 'warning' },
 };
 
 const ITEMS_PER_PAGE = 10;
 
 export function CustomersPage() {
-  const [customers] = useState<Customer[]>(mockCustomers);
+  const [customers] = useState<WhatsAppCustomer[]>(mockCustomers);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortKey, setSortKey] = useState<SortKey>('lastContact');
+  const [sortKey, setSortKey] = useState<SortKey>('lastMessage');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const [showActions, setShowActions] = useState<string | null>(null);
@@ -124,16 +124,15 @@ export function CustomersPage() {
   };
 
   const handleExport = () => {
-    const headers = ['Name', 'Phone', 'Email', 'Total Calls', 'Answered', 'Answer Rate', 'Avg Duration', 'Last Contact', 'Status'];
+    const headers = ['Name', 'Phone', 'Email', 'Total Messages', 'Conversations', 'Avg Response Time', 'Last Message', 'Status'];
     const rows = sortedCustomers.map(c => [
       c.name ?? '',
       c.phone,
       c.email ?? '',
-      c.totalCalls,
-      c.answeredCalls,
-      `${c.answerRate}%`,
-      c.avgDuration,
-      c.lastContact,
+      c.totalMessages,
+      c.conversations,
+      c.avgResponseTime,
+      c.lastMessage,
       c.status
     ]);
     
@@ -146,7 +145,7 @@ export function CustomersPage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `customers_${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `whatsapp_customers_${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -222,42 +221,34 @@ export function CustomersPage() {
                 </th>
                 <th 
                   className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
-                  onClick={() => handleSort('totalCalls')}
+                  onClick={() => handleSort('totalMessages')}
                 >
                   <div className="flex items-center gap-1">
-                    Total Calls <SortIcon columnKey="totalCalls" />
+                    Messages <SortIcon columnKey="totalMessages" />
                   </div>
                 </th>
                 <th 
                   className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
-                  onClick={() => handleSort('answeredCalls')}
+                  onClick={() => handleSort('conversations')}
                 >
                   <div className="flex items-center gap-1">
-                    Answered <SortIcon columnKey="answeredCalls" />
+                    Conversations <SortIcon columnKey="conversations" />
                   </div>
                 </th>
                 <th 
                   className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
-                  onClick={() => handleSort('answerRate')}
+                  onClick={() => handleSort('avgResponseTime')}
                 >
                   <div className="flex items-center gap-1">
-                    Rate <SortIcon columnKey="answerRate" />
+                    Avg Response <SortIcon columnKey="avgResponseTime" />
                   </div>
                 </th>
                 <th 
                   className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
-                  onClick={() => handleSort('avgDuration')}
+                  onClick={() => handleSort('lastMessage')}
                 >
                   <div className="flex items-center gap-1">
-                    Avg Duration <SortIcon columnKey="avgDuration" />
-                  </div>
-                </th>
-                <th 
-                  className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
-                  onClick={() => handleSort('lastContact')}
-                >
-                  <div className="flex items-center gap-1">
-                    Last Contact <SortIcon columnKey="lastContact" />
+                    Last Message <SortIcon columnKey="lastMessage" />
                   </div>
                 </th>
                 <th 
@@ -292,7 +283,7 @@ export function CustomersPage() {
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-1.5 text-sm text-slate-600">
-                      <Phone className="w-3.5 h-3.5 text-slate-400" />
+                      <MessageSquare className="w-3.5 h-3.5 text-slate-400" />
                       {customer.phone}
                     </div>
                   </td>
@@ -306,19 +297,19 @@ export function CustomersPage() {
                       <span className="text-slate-300">-</span>
                     )}
                   </td>
-                  <td className="py-3 px-4 text-sm text-slate-600">{customer.totalCalls}</td>
-                  <td className="py-3 px-4 text-sm text-slate-600">{customer.answeredCalls}</td>
+                  <td className="py-3 px-4 text-sm text-slate-600">{customer.totalMessages}</td>
+                  <td className="py-3 px-4 text-sm text-slate-600">{customer.conversations}</td>
                   <td className="py-3 px-4">
                     <span className={`text-sm font-medium ${
-                      customer.answerRate >= 80 ? 'text-green-600' :
-                      customer.answerRate >= 50 ? 'text-amber-600' :
+                      customer.avgResponseTime === '-' ? 'text-slate-400' :
+                      parseFloat(customer.avgResponseTime) < 2 ? 'text-green-600' :
+                      parseFloat(customer.avgResponseTime) < 3 ? 'text-amber-600' :
                       'text-red-500'
                     }`}>
-                      {customer.answerRate.toFixed(1)}%
+                      {customer.avgResponseTime}
                     </span>
                   </td>
-                  <td className="py-3 px-4 text-sm text-slate-600">{customer.avgDuration}</td>
-                  <td className="py-3 px-4 text-sm text-slate-500">{customer.lastContact}</td>
+                  <td className="py-3 px-4 text-sm text-slate-500">{customer.lastMessage}</td>
                   <td className="py-3 px-4">
                     <Badge variant={statusConfig[customer.status].variant}>
                       {statusConfig[customer.status].label}
@@ -332,24 +323,24 @@ export function CustomersPage() {
                       <MoreHorizontal className="w-4 h-4" />
                     </button>
                     {showActions === customer.id && (
-                      <div className="absolute right-4 top-full mt-1 w-40 bg-white border border-slate-200 rounded-lg shadow-lg z-10">
+                      <div className="absolute right-4 top-full mt-1 w-44 bg-white border border-slate-200 rounded-lg shadow-lg z-10">
                         <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">
-                          <Phone className="w-4 h-4" />
-                          Call Now
+                          <Send className="w-4 h-4" />
+                          Send Message
                         </button>
                         <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">
-                          <Clock className="w-4 h-4" />
-                          Schedule Call
+                          <Eye className="w-4 h-4" />
+                          View Conversation
                         </button>
-                        {customer.status !== 'do_not_call' ? (
+                        {customer.status !== 'blocked' ? (
                           <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50">
                             <Ban className="w-4 h-4" />
-                            Do Not Call
+                            Block
                           </button>
                         ) : (
                           <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-green-600 hover:bg-green-50">
                             <CheckCircle className="w-4 h-4" />
-                            Reactivate
+                            Unblock
                           </button>
                         )}
                       </div>
@@ -359,7 +350,7 @@ export function CustomersPage() {
               ))}
               {paginatedCustomers.length === 0 && (
                 <tr>
-                  <td colSpan={10} className="py-10 text-center text-slate-500">
+                  <td colSpan={9} className="py-10 text-center text-slate-500">
                     No customers found
                   </td>
                 </tr>

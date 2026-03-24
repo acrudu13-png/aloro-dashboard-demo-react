@@ -25,16 +25,40 @@ export interface CallVariable {
   type?: 'promise_date' | 'amount' | 'escalation_reason' | 'priority' | 'other';
 }
 
-export interface Assistant {
+export interface SupportAgent {
   id: string;
   name: string;
   description: string;
-  type: 'debt-collection' | 'sales-outreach' | 'support' | 'custom';
   status: 'active' | 'draft' | 'archived';
-  callsCount: number;
-  successRate: number;
   language: string;
-  voice: string;
+  // Core AI config — inherited by all flows
+  systemPrompt: string;
+  greetingMessage: string;
+  fallbackMessage: string;
+  model: string;
+  temperature: number;
+  // Resources available to all flows
+  toolIds: string[];
+  knowledgeBaseIds: string[];
+  // Conversation behavior
+  conversationTimeoutHours: number;
+  humanHandoff: {
+    enabled: boolean;
+    condition: string;
+  };
+  // Post-conversation
+  postConversationWebhookId?: string;
+  followUpMessage?: string;
+  // Flow management
+  flowIds: string[];
+  activeFlowId?: string;
+  // Channel assignment
+  whatsappSenderId?: string;
+  // Stats (from API in production)
+  conversationsCount: number;
+  resolutionRate: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Campaign {
@@ -49,6 +73,41 @@ export interface Campaign {
   createdAt: string;
 }
 
+// ─── WhatsApp Sender / Agent ────────────────────────────────────────────────
+
+export interface TranscriberConfig {
+  provider: 'soniox' | 'deepgram' | 'whisper' | 'google';
+  language: string;
+  contextHints: string[];
+  keywords: string[];
+  enablePunctuation: boolean;
+  enableProfanityFilter: boolean;
+}
+
+export type AgentClassification =
+  | 'technical-support'
+  | 'customer-service'
+  | 'sales'
+  | 'onboarding'
+  | 'debt-collection'
+  | 'scheduling'
+  | 'custom';
+
+export interface AgentPersona {
+  systemPrompt: string;
+  greeting: string;
+  fallbackMessage: string;
+  language: string;
+  tone: 'formal' | 'friendly' | 'neutral';
+}
+
+export interface BusinessHours {
+  enabled: boolean;
+  timezone: string;
+  schedule: Record<string, { start: string; end: string } | null>;
+  offlineMessage: string;
+}
+
 export interface WhatsAppSender {
   id: string;
   number: string;
@@ -57,6 +116,14 @@ export interface WhatsAppSender {
   status: 'online' | 'connecting' | 'pending' | 'offline';
   quality: 'high' | 'medium' | 'low';
   messagesCount: number;
+  // Agent configuration
+  agentClassification: AgentClassification;
+  persona: AgentPersona;
+  flowId?: string;
+  transcriber: TranscriberConfig;
+  sessionTimeoutMinutes: number;
+  businessHours?: BusinessHours;
+  maxConcurrentSessions?: number;
 }
 
 export interface WhatsAppTemplate {
@@ -103,6 +170,172 @@ export interface PhoneNumber {
   assignedTo: string;
   status: 'active' | 'inactive';
   monthlyCost: string;
+}
+
+// ─── Tools (referenced by flow nodes) ───────────────────────────────────────
+
+export type ToolCategory = 'api' | 'crm' | 'ticketing' | 'notification' | 'data';
+
+export interface ToolParam {
+  id: string;
+  name: string;
+  type: 'string' | 'number' | 'boolean' | 'object';
+  description: string;
+  required: boolean;
+  defaultValue?: string;
+}
+
+export interface Tool {
+  id: string;
+  name: string;
+  description: string;
+  category: ToolCategory;
+  status: 'active' | 'inactive';
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  url: string;
+  headers: Record<string, string>;
+  params: ToolParam[];
+  responseMapping?: string;
+  usedInFlows: string[];
+}
+
+// ─── WhatsApp Flow Builder Types ─────────────────────────────────────────────
+
+export type FlowNodeType =
+  | 'start'
+  | 'ai-conversation'
+  | 'tool-call'
+  | 'condition'
+  | 'send-message'
+  | 'wait-for-input'
+  | 'set-variable'
+  | 'handoff'
+  | 'end'
+  // Legacy — kept for backward compat with existing flows
+  | 'function';
+
+export interface FlowVariable {
+  name: string;
+  type: 'string' | 'number' | 'boolean' | 'object';
+  defaultValue?: string;
+  description?: string;
+}
+
+export type ConditionType = 'variable' | 'ai-intent' | 'pattern';
+
+export interface FlowCondition {
+  id: string;
+  label: string;
+  type: ConditionType;
+  // Variable check
+  variable?: string;
+  operator: 'contains' | 'equals' | 'not_equals' | 'starts_with' | 'matches_regex'
+    | 'greater_than' | 'less_than' | 'is_empty' | 'is_set';
+  value?: string;
+  // AI Intent
+  intentDescription?: string;
+  confidenceThreshold?: number;
+}
+
+export interface VariableAssignment {
+  variable: string;
+  expression: string;
+}
+
+export interface FlowNodeData extends Record<string, unknown> {
+  label: string;
+  nodeType: FlowNodeType;
+  description?: string;
+
+  // === AI Conversation node ===
+  systemPrompt?: string;
+  model?: string;
+  temperature?: number;
+  maxTurns?: number;
+  toolIds?: string[];
+  knowledgeBaseIds?: string[];
+  exitConditions?: FlowCondition[];
+
+  // === Tool Call node ===
+  toolId?: string;
+  inputMapping?: Record<string, string>;
+  outputMapping?: Record<string, string>;
+
+  // === Condition node ===
+  conditions?: FlowCondition[];
+
+  // === Send Message node ===
+  messageBody?: string;
+  templateId?: string;
+  mediaUrl?: string;
+
+  // === Wait for Input node ===
+  promptMessage?: string;
+  variableName?: string;
+  timeout?: number;
+  timeoutAction?: 'repeat' | 'advance' | 'end';
+
+  // === Set Variable node ===
+  assignments?: VariableAssignment[];
+
+  // === Handoff node ===
+  handoffTarget?: string;
+  handoffMessage?: string;
+  includeTranscript?: boolean;
+  handoffMetadata?: Record<string, string>;
+
+  // === Legacy Function node (deprecated — use tool-call) ===
+  webhookId?: string;
+  webhookUrl?: string;
+  httpMethod?: 'GET' | 'POST' | 'PUT' | 'PATCH';
+  headers?: Record<string, string>;
+  requestBody?: string;
+}
+
+export interface FlowGlobalSettings {
+  agentModel: string;
+  temperature: number;
+  systemPrompt: string;
+  knowledgeBaseIds: string[];
+  toolIds: string[];
+  globalWebhookId?: string;
+  fallbackMessage: string;
+  sessionTimeoutMinutes: number;
+}
+
+export interface WhatsAppFlow {
+  id: string;
+  agentId: string;          // which SupportAgent owns this flow
+  name: string;
+  description: string;
+  status: 'active' | 'draft' | 'archived';
+  createdAt: string;
+  updatedAt: string;
+  messagesCount: number;
+  nodes: FlowNode[];
+  edges: FlowEdge[];
+  variables: FlowVariable[];
+  version: number;
+  lastPublishedAt?: string;
+}
+
+// Minimal React Flow-compatible node/edge shapes (avoids importing @xyflow/react in types)
+export interface FlowNode {
+  id: string;
+  type: FlowNodeType;
+  position: { x: number; y: number };
+  data: FlowNodeData;
+}
+
+export interface FlowEdge {
+  id: string;
+  source: string;
+  target: string;
+  sourceHandle?: string | null;
+  targetHandle?: string | null;
+  label?: string;
+  conditionId?: string;
+  animated?: boolean;
 }
 
 export interface PromiseDate {

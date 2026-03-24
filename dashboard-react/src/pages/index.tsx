@@ -1,34 +1,29 @@
 import { PlaceholderPage } from './PlaceholderPage';
-import { WebWidgetPage as WebWidgetPageComponent } from './WebWidgetPage';
+import { WebhooksPage as WebhooksPageComponent } from './WebhooksPage';
+import { KnowledgeBasesPage as KnowledgeBasesPageComponent } from './KnowledgeBasesPage';
+import { ToolsPage as ToolsPageComponent } from './ToolsPage';
+import { InsightsPage as InsightsPageComponent } from './InsightsPage';
 
-export function ConversationsPage() {
-  return <PlaceholderPage title="Conversations" description="WhatsApp and Web chat history" />;
-}
+export { ConversationsPage } from './ConversationsPage';
 
 export function KnowledgeBasesPage() {
-  return <PlaceholderPage title="Knowledge Bases" description="Manage document collections for AI context" />;
+  return <KnowledgeBasesPageComponent />;
 }
 
-export function WebWidgetPage() {
-  return <WebWidgetPageComponent />;
-}
-
-export function PhoneNumbersPage() {
-  return <PlaceholderPage title="Phone Numbers" description="Manage inbound and outbound phone numbers" />;
-}
-
-export function WhatsAppPage() {
-  return <PlaceholderPage title="WhatsApp" description="WhatsApp Business integration" />;
-}
+export { WhatsAppPage } from './WhatsApp';
 
 export function WebhooksPage() {
-  return <PlaceholderPage title="Webhooks" description="Post-call and event webhooks" />;
+  return <WebhooksPageComponent />;
 }
 
-export function CustomDashboardsPage() {
-  return <PlaceholderPage title="Custom Dashboards" description="Build custom analytics views" />;
+export function ToolsPage() {
+  return <ToolsPageComponent />;
+}
+
+export function InsightsPage() {
+  return <InsightsPageComponent />;
 }
 
 export function DocumentationPage() {
-  return <PlaceholderPage title="Documentation" description="API docs and guides" />;
+  return <PlaceholderPage title="Documentation" description="API docs and integration guides" />;
 }
