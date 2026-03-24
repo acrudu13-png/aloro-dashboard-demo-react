@@ -16,12 +16,12 @@ const webhooks = [
   { id: 'wh-3', name: 'Slack Notification' },
 ];
 
-const languages = ['Spanish', 'English', 'Portuguese', 'French', 'Italian'];
+const languages = ['Romanian', 'Spanish', 'English', 'Portuguese', 'French', 'Italian'];
 
 export function AssistantModal({ isOpen, onClose, assistantId }: AssistantModalProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('general');
   const [greetingMessage, setGreetingMessage] = useState(
-    'Hola! Soy el asistente de soporte de Horeca Software. ¿En qué puedo ayudarte hoy?'
+    'Bună ziua! Sunt asistentul de suport Aloro. Cu ce vă pot ajuta astăzi?'
   );
   const [prompt, setPrompt] = useState(
     `You are a support assistant for Horeca Software. Your goals:
@@ -32,7 +32,7 @@ export function AssistantModal({ isOpen, onClose, assistantId }: AssistantModalP
 
 Available actions: check_server_status, restart_pos, validate_license, create_support_ticket`
   );
-  const [language, setLanguage] = useState('Spanish');
+  const [language, setLanguage] = useState('Romanian');
   const [humanHandoffEnabled, setHumanHandoffEnabled] = useState(true);
   const [whenToHandoff, setWhenToHandoff] = useState(
     'Hand off to a human agent when the customer requests it, or when 3 automated resolution attempts have failed'

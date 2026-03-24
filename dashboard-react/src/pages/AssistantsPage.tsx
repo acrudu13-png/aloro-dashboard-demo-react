@@ -19,7 +19,7 @@ export const seedAgents: SupportAgent[] = [
     name: 'Horeca Support Bot',
     description: 'Handles POS system issues, server health checks, and software troubleshooting for restaurant clients',
     status: 'active',
-    language: 'Spanish',
+    language: 'Romanian',
     systemPrompt: `You are a technical support assistant for Horeca Software. Your goals:
 - Diagnose POS and server issues reported by restaurant clients
 - Trigger the appropriate API endpoints to restart services or check server health
@@ -48,7 +48,7 @@ export const seedAgents: SupportAgent[] = [
     name: 'License & Billing Bot',
     description: 'Answers licensing questions, triggers invoice webhooks, and validates subscription status',
     status: 'active',
-    language: 'Spanish',
+    language: 'Romanian',
     systemPrompt: `You are a billing and license support assistant for Horeca Software.
 - Answer questions about subscription plans and pricing
 - Validate license keys and subscription status via API
@@ -74,7 +74,7 @@ export const seedAgents: SupportAgent[] = [
     name: 'Onboarding Assistant',
     description: 'Guides new clients through initial setup and configuration of Horeca software',
     status: 'draft',
-    language: 'Spanish',
+    language: 'Romanian',
     systemPrompt: `You are an onboarding assistant for Horeca Software.
 - Guide new restaurant clients through first-time software setup
 - Walk through POS configuration step by step
