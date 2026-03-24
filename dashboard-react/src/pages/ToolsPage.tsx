@@ -278,7 +278,7 @@ function ToolModal({ tool, onClose, onSave }: ToolModalProps) {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5">HTTP Method</label>
-                  <select value={method} onChange={e => setMethod(e.target.value)}
+                  <select value={method} onChange={e => setMethod(e.target.value as typeof method)}
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white">
                     {['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].map(m => <option key={m} value={m}>{m}</option>)}
                   </select>

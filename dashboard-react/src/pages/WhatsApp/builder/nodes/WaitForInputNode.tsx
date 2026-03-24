@@ -1,10 +1,10 @@
 import { Handle, Position } from '@xyflow/react';
-import type { NodeProps } from '@xyflow/react';
+import type { Node, NodeProps } from '@xyflow/react';
 import { MessageCircle, Clock } from 'lucide-react';
 import type { FlowNodeData } from '../../../../types';
 import { NodeWrapper } from './NodeWrapper';
 
-export function WaitForInputNode({ id, data, selected }: NodeProps<FlowNodeData>) {
+export function WaitForInputNode({ id, data, selected }: NodeProps<Node<FlowNodeData>>) {
   const prompt = data.promptMessage as string | undefined;
   const variableName = data.variableName as string | undefined;
   const timeout = data.timeout as number | undefined;
@@ -23,7 +23,7 @@ export function WaitForInputNode({ id, data, selected }: NodeProps<FlowNodeData>
           <div className="flex items-center gap-3">
             {variableName && (
               <span className="text-xs font-mono bg-teal-50 text-teal-700 px-1.5 py-0.5 rounded">
-                {'{{' + variableName + '}}'}
+                {`{{${variableName}}}`}
               </span>
             )}
             {timeout && (

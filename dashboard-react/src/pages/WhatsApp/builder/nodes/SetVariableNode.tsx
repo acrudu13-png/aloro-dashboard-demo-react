@@ -1,10 +1,10 @@
 import { Handle, Position } from '@xyflow/react';
-import type { NodeProps } from '@xyflow/react';
+import type { Node, NodeProps } from '@xyflow/react';
 import { Variable } from 'lucide-react';
 import type { FlowNodeData, VariableAssignment } from '../../../../types';
 import { NodeWrapper } from './NodeWrapper';
 
-export function SetVariableNode({ id, data, selected }: NodeProps<FlowNodeData>) {
+export function SetVariableNode({ id, data, selected }: NodeProps<Node<FlowNodeData>>) {
   const assignments = (data.assignments as VariableAssignment[] | undefined) || [];
 
   return (

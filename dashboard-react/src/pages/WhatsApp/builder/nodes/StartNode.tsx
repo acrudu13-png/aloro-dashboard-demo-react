@@ -1,9 +1,9 @@
 import { Handle, Position } from '@xyflow/react';
-import type { NodeProps } from '@xyflow/react';
+import type { Node, NodeProps } from '@xyflow/react';
 import { Play } from 'lucide-react';
 import type { FlowNodeData } from '../../../../types';
 
-export function StartNode({ data, selected }: NodeProps<FlowNodeData>) {
+export function StartNode({ data, selected }: NodeProps<Node<FlowNodeData>>) {
   return (
     <div className={`bg-white rounded-xl shadow-sm min-w-[200px] border-2 transition-colors ${selected ? 'border-purple-500' : 'border-purple-200'}`}>
       <div className="flex items-center gap-2 px-3 py-2 bg-purple-50 rounded-t-xl border-b border-purple-100">

@@ -1,10 +1,10 @@
 import { Handle, Position } from '@xyflow/react';
-import type { NodeProps } from '@xyflow/react';
+import type { Node, NodeProps } from '@xyflow/react';
 import { Code2, Link } from 'lucide-react';
 import type { FlowNodeData } from '../../../../types';
 import { NodeWrapper } from './NodeWrapper';
 
-export function FunctionNode({ id, data, selected }: NodeProps<FlowNodeData>) {
+export function FunctionNode({ id, data, selected }: NodeProps<Node<FlowNodeData>>) {
   const url = data.webhookUrl as string | undefined;
   const method = (data.httpMethod as string | undefined) || 'POST';
 

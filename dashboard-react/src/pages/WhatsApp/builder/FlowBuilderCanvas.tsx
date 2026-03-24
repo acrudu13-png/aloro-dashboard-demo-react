@@ -13,6 +13,7 @@ import {
   type OnNodesChange,
   type OnEdgesChange,
   type NodeMouseHandler,
+  type NodeTypes,
 } from '@xyflow/react';
 import { Trash2, Copy } from 'lucide-react';
 import { StartNode } from './nodes/StartNode';
@@ -28,7 +29,7 @@ import { SetVariableNode } from './nodes/SetVariableNode';
 import type { FlowNodeData, FlowNodeType } from '../../../types';
 
 // Module-level constant — must NOT be inside a component
-const nodeTypes = {
+const nodeTypes: NodeTypes = {
   start: StartNode,
   'ai-conversation': AiConversationNode,
   'tool-call': ToolCallNode,
@@ -130,7 +131,7 @@ export function FlowBuilderCanvas({
 
   const handleDuplicateFromMenu = useCallback(() => {
     if (!contextMenu) return;
-    const node = getNode(contextMenu.nodeId);
+    const node = getNode(contextMenu.nodeId) as Node<FlowNodeData> | undefined;
     if (node) {
       const newNode: Node<FlowNodeData> = {
         ...node,

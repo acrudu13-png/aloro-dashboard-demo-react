@@ -1,5 +1,5 @@
 import { Handle, Position } from '@xyflow/react';
-import type { NodeProps } from '@xyflow/react';
+import type { Node, NodeProps } from '@xyflow/react';
 import { Bot, Zap, Database, ArrowRightCircle } from 'lucide-react';
 import type { FlowNodeData, FlowCondition } from '../../../../types';
 import { NodeWrapper } from './NodeWrapper';
@@ -20,7 +20,7 @@ const kbNames: Record<string, string> = {
   'kb-3': 'SLA & Licensing',
 };
 
-export function AiConversationNode({ id, data, selected }: NodeProps<FlowNodeData>) {
+export function AiConversationNode({ id, data, selected }: NodeProps<Node<FlowNodeData>>) {
   const prompt = data.systemPrompt as string | undefined;
   const preview = prompt ? prompt.slice(0, 80) + (prompt.length > 80 ? '...' : '') : 'No system prompt configured';
   const toolIds = (data.toolIds as string[] | undefined) || [];

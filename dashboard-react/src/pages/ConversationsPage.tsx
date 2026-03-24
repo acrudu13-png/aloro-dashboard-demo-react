@@ -451,7 +451,7 @@ function formatDuration(seconds: number): string {
 
 // ── Audio Waveform (Demo) ─────────────────────────────────────────────────────
 
-function AudioWaveform({ isPlaying, progress }: { isPlaying: boolean; progress: number }) {
+function AudioWaveform({ progress }: { isPlaying: boolean; progress: number }) {
   const bars = 40;
   const heights = Array.from({ length: bars }, (_, i) => {
     // Generate pseudo-random heights based on index
@@ -482,7 +482,7 @@ function AudioWaveform({ isPlaying, progress }: { isPlaying: boolean; progress: 
 function AudioMessageBubble({ msg }: { msg: Message }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [showTranscription, setShowTranscription] = useState(true);
+  const [showTranscription] = useState(true);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const duration = msg.audioDuration || 0;
 

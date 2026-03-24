@@ -1,10 +1,10 @@
 import { Handle, Position } from '@xyflow/react';
-import type { NodeProps } from '@xyflow/react';
+import type { Node, NodeProps } from '@xyflow/react';
 import { MessageSquare } from 'lucide-react';
 import type { FlowNodeData } from '../../../../types';
 import { NodeWrapper } from './NodeWrapper';
 
-export function SendMessageNode({ id, data, selected }: NodeProps<FlowNodeData>) {
+export function SendMessageNode({ id, data, selected }: NodeProps<Node<FlowNodeData>>) {
   const body = data.messageBody as string | undefined;
   const preview = body ? body.slice(0, 70) + (body.length > 70 ? '…' : '') : 'No message configured';
 

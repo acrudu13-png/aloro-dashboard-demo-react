@@ -1,10 +1,10 @@
 import { Handle, Position } from '@xyflow/react';
-import type { NodeProps } from '@xyflow/react';
+import type { Node, NodeProps } from '@xyflow/react';
 import { StopCircle } from 'lucide-react';
 import type { FlowNodeData } from '../../../../types';
 import { NodeWrapper } from './NodeWrapper';
 
-export function EndNode({ id, data, selected }: NodeProps<FlowNodeData>) {
+export function EndNode({ id, data, selected }: NodeProps<Node<FlowNodeData>>) {
   return (
     <NodeWrapper nodeId={id} selected={!!selected}>
     <div className={`bg-white rounded-xl shadow-sm min-w-[180px] border-2 transition-colors ${selected ? 'border-slate-500' : 'border-slate-200'}`}>

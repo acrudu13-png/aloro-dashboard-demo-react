@@ -1,10 +1,10 @@
 import { Handle, Position } from '@xyflow/react';
-import type { NodeProps } from '@xyflow/react';
+import type { Node, NodeProps } from '@xyflow/react';
 import { UserCheck } from 'lucide-react';
 import type { FlowNodeData } from '../../../../types';
 import { NodeWrapper } from './NodeWrapper';
 
-export function HandoffNode({ id, data, selected }: NodeProps<FlowNodeData>) {
+export function HandoffNode({ id, data, selected }: NodeProps<Node<FlowNodeData>>) {
   const target = data.handoffTarget as string | undefined;
   const message = data.handoffMessage as string | undefined;
 

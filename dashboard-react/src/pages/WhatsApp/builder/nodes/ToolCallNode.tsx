@@ -1,5 +1,5 @@
 import { Handle, Position } from '@xyflow/react';
-import type { NodeProps } from '@xyflow/react';
+import type { Node, NodeProps } from '@xyflow/react';
 import { Zap, AlertCircle } from 'lucide-react';
 import type { FlowNodeData } from '../../../../types';
 import { NodeWrapper } from './NodeWrapper';
@@ -23,7 +23,7 @@ const categoryColors: Record<string, string> = {
   data: 'bg-slate-100 text-slate-600',
 };
 
-export function ToolCallNode({ id, data, selected }: NodeProps<FlowNodeData>) {
+export function ToolCallNode({ id, data, selected }: NodeProps<Node<FlowNodeData>>) {
   const toolId = data.toolId as string | undefined;
   const tool = toolId ? toolNames[toolId] : null;
   const inputMapping = data.inputMapping as Record<string, string> | undefined;

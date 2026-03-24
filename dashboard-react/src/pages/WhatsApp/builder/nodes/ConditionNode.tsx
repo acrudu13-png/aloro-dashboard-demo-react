@@ -1,10 +1,10 @@
 import { Handle, Position } from '@xyflow/react';
-import type { NodeProps } from '@xyflow/react';
+import type { Node, NodeProps } from '@xyflow/react';
 import { GitBranch } from 'lucide-react';
 import type { FlowNodeData, FlowCondition } from '../../../../types';
 import { NodeWrapper } from './NodeWrapper';
 
-export function ConditionNode({ id, data, selected }: NodeProps<FlowNodeData>) {
+export function ConditionNode({ id, data, selected }: NodeProps<Node<FlowNodeData>>) {
   const conditions = (data.conditions as FlowCondition[] | undefined) || [];
 
   return (
