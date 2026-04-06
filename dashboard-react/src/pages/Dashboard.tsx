@@ -20,6 +20,16 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
+import { Card, CardContent, CardHeader } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../components/ui/table';
 
 // Mock data — last 7 days
 const chartData = [
@@ -58,8 +68,8 @@ const kpiData = [
     value: '91.4%',
     subtitle: 'resolved without human',
     icon: CheckCircle,
-    iconBgColor: 'bg-accent-100',
-    iconColor: 'text-accent-600',
+    iconBgColor: 'bg-blue-100',
+    iconColor: 'text-blue-600',
     trend: { value: 3.1, isPositive: true },
   },
   {
@@ -189,114 +199,118 @@ export function Dashboard() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
         {/* Conversation Volume Chart */}
-        <div className="bg-white rounded-lg p-4 lg:p-5 border border-slate-200">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-slate-700">Conversation Metrics (Last 7 Days)</h2>
-          </div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {lineConfig.map(line => (
-              <button
-                key={line.key}
-                onClick={() => toggleLine(line.key)}
-                className={`px-3 py-1.5 text-xs font-medium rounded-full border transition ${
-                  activeLines.includes(line.key)
-                    ? 'border-transparent text-white'
-                    : 'border-slate-200 text-slate-600 hover:bg-slate-50'
-                }`}
-                style={activeLines.includes(line.key) ? { backgroundColor: line.color } : {}}
-              >
-                {line.label}
-              </button>
-            ))}
-          </div>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} stroke="#94a3b8" />
-                <YAxis tick={{ fontSize: 12 }} stroke="#94a3b8" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#fff',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                  }}
-                />
-                <Legend />
-                {lineConfig.map(line =>
-                  activeLines.includes(line.key) && (
-                    <Line
-                      key={line.key}
-                      type="monotone"
-                      dataKey={line.key}
-                      name={line.label}
-                      stroke={line.color}
-                      strokeWidth={2}
-                      dot={{ r: 3 }}
-                      activeDot={{ r: 5 }}
-                    />
-                  )
-                )}
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        <Card>
+          <CardContent className="p-4 lg:p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold">Conversation Metrics (Last 7 Days)</h2>
+            </div>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {lineConfig.map(line => (
+                <button
+                  key={line.key}
+                  onClick={() => toggleLine(line.key)}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full border transition ${
+                    activeLines.includes(line.key)
+                      ? 'border-transparent text-white'
+                      : 'border-border text-muted-foreground hover:bg-muted'
+                  }`}
+                  style={activeLines.includes(line.key) ? { backgroundColor: line.color } : {}}
+                >
+                  {line.label}
+                </button>
+              ))}
+            </div>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <XAxis dataKey="name" tick={{ fontSize: 12 }} stroke="#94a3b8" />
+                  <YAxis tick={{ fontSize: 12 }} stroke="#94a3b8" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#fff',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '8px',
+                      fontSize: '12px',
+                    }}
+                  />
+                  <Legend />
+                  {lineConfig.map(line =>
+                    activeLines.includes(line.key) && (
+                      <Line
+                        key={line.key}
+                        type="monotone"
+                        dataKey={line.key}
+                        name={line.label}
+                        stroke={line.color}
+                        strokeWidth={2}
+                        dot={{ r: 3 }}
+                        activeDot={{ r: 5 }}
+                      />
+                    )
+                  )}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Resolution Breakdown Chart */}
-        <div className="bg-white rounded-lg p-4 lg:p-5 border border-slate-200">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-slate-700">Resolution Breakdown</h2>
-          </div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {resLineConfig.map(line => (
-              <button
-                key={line.key}
-                onClick={() => toggleResLine(line.key)}
-                className={`px-3 py-1.5 text-xs font-medium rounded-full border transition ${
-                  activeResLines.includes(line.key)
-                    ? 'border-transparent text-white'
-                    : 'border-slate-200 text-slate-600 hover:bg-slate-50'
-                }`}
-                style={activeResLines.includes(line.key) ? { backgroundColor: line.color } : {}}
-              >
-                {line.label}
-              </button>
-            ))}
-          </div>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={resolutionData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} stroke="#94a3b8" />
-                <YAxis tick={{ fontSize: 12 }} stroke="#94a3b8" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#fff',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                  }}
-                />
-                <Legend />
-                {resLineConfig.map(line =>
-                  activeResLines.includes(line.key) && (
-                    <Line
-                      key={line.key}
-                      type="monotone"
-                      dataKey={line.key}
-                      name={line.label}
-                      stroke={line.color}
-                      strokeWidth={2}
-                      dot={{ r: 3 }}
-                      activeDot={{ r: 5 }}
-                    />
-                  )
-                )}
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        <Card>
+          <CardContent className="p-4 lg:p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold">Resolution Breakdown</h2>
+            </div>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {resLineConfig.map(line => (
+                <button
+                  key={line.key}
+                  onClick={() => toggleResLine(line.key)}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full border transition ${
+                    activeResLines.includes(line.key)
+                      ? 'border-transparent text-white'
+                      : 'border-border text-muted-foreground hover:bg-muted'
+                  }`}
+                  style={activeResLines.includes(line.key) ? { backgroundColor: line.color } : {}}
+                >
+                  {line.label}
+                </button>
+              ))}
+            </div>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={resolutionData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <XAxis dataKey="name" tick={{ fontSize: 12 }} stroke="#94a3b8" />
+                  <YAxis tick={{ fontSize: 12 }} stroke="#94a3b8" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#fff',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '8px',
+                      fontSize: '12px',
+                    }}
+                  />
+                  <Legend />
+                  {resLineConfig.map(line =>
+                    activeResLines.includes(line.key) && (
+                      <Line
+                        key={line.key}
+                        type="monotone"
+                        dataKey={line.key}
+                        name={line.label}
+                        stroke={line.color}
+                        strokeWidth={2}
+                        dot={{ r: 3 }}
+                        activeDot={{ r: 5 }}
+                      />
+                    )
+                  )}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Summary Cards */}
@@ -304,80 +318,78 @@ export function Dashboard() {
         {resolutionSummary.map((item, i) => (
           <div
             key={i}
-            className={`flex items-center justify-between p-3 rounded-lg ${item.bgClass} border border-slate-100`}
+            className={`flex items-center justify-between p-3 rounded-lg ${item.bgClass} border border-border/50`}
           >
             <div className="flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full ${item.color}`} />
-              <span className="text-sm text-slate-700">{item.label}</span>
+              <span className="text-sm">{item.label}</span>
             </div>
-            <span className="text-sm font-semibold text-slate-800">{item.count}</span>
+            <span className="text-sm font-semibold">{item.count}</span>
           </div>
         ))}
       </div>
 
       {/* Recent Conversations */}
-      <div className="bg-white rounded-lg border border-slate-200">
-        <div className="flex items-center justify-between p-4 border-b border-slate-100">
-          <h2 className="text-sm font-semibold text-slate-700">Recent Conversations</h2>
-          <a href="#" className="text-accent-600 font-medium hover:underline text-sm">
-            View all →
-          </a>
-        </div>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between p-4 pb-0 border-b">
+          <h2 className="text-sm font-semibold">Recent Conversations</h2>
+          <Button variant="link" className="text-sm h-auto p-0 pr-0">View all →</Button>
+        </CardHeader>
         <div className="table-responsive">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/50">
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-8"></th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Contact</th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Chatbot</th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Outcome</th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
-              </tr>
-            </thead>
-            <tbody>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-8"></TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Contact</TableHead>
+                <TableHead>Chatbot</TableHead>
+                <TableHead>Outcome</TableHead>
+                <TableHead>Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {recentConversations.map((conv) => (
                 <>
-                  <tr
+                  <TableRow
                     key={conv.id}
-                    className="border-b border-slate-50 cursor-pointer hover:bg-slate-50"
+                    className="cursor-pointer"
                     onClick={() => setExpandedRow(expandedRow === conv.id ? null : conv.id)}
                   >
-                    <td className="py-3 px-4">
+                    <TableCell>
                       <ChevronRight
-                        className={`w-3 h-3 text-slate-300 transition-transform ${
+                        className={`w-3 h-3 text-muted-foreground/50 transition-transform ${
                           expandedRow === conv.id ? 'rotate-90' : ''
                         }`}
                       />
-                    </td>
-                    <td className="py-3 px-4">
+                    </TableCell>
+                    <TableCell>
                       <Badge variant={conv.status === 'resolved' ? 'success' : 'danger'}>
                         {conv.status === 'resolved' ? 'Resolved' : 'Handoff'}
                       </Badge>
-                    </td>
-                    <td className="py-3 px-4 text-sm text-slate-700">{conv.contact}</td>
-                    <td className="py-3 px-4 text-sm text-accent-600 font-medium">{conv.chatbot}</td>
-                    <td className="py-3 px-4">
+                    </TableCell>
+                    <TableCell className="text-sm">{conv.contact}</TableCell>
+                    <TableCell className="text-sm text-blue-600 font-medium">{conv.chatbot}</TableCell>
+                    <TableCell>
                       <Badge variant={outcomeConfig[conv.outcome].variant}>
                         {outcomeConfig[conv.outcome].label}
                       </Badge>
-                    </td>
-                    <td className="py-3 px-4 text-sm text-slate-500">{conv.date}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{conv.date}</TableCell>
+                  </TableRow>
                   {expandedRow === conv.id && (
-                    <tr key={`${conv.id}-details`} className="bg-slate-50">
-                      <td colSpan={6} className="px-4 py-3">
-                        <p className="text-xs text-slate-500 mb-1 font-medium">Summary</p>
-                        <p className="text-xs text-slate-700">{conv.summary}</p>
-                      </td>
-                    </tr>
+                    <TableRow key={`${conv.id}-details`} className="bg-muted/30">
+                      <TableCell colSpan={6} className="px-4 py-3">
+                        <p className="text-xs text-muted-foreground mb-1 font-medium">Summary</p>
+                        <p className="text-xs">{conv.summary}</p>
+                      </TableCell>
+                    </TableRow>
                   )}
                 </>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

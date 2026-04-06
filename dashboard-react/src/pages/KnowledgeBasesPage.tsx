@@ -1,6 +1,15 @@
 import { useState, useRef } from 'react';
 import { Plus, Database, FileText, Trash2, Upload, Search, RefreshCw, CheckCircle, AlertCircle, Clock } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
+import { Button } from '../components/ui/button';
+import { Card, CardContent } from '../components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Textarea } from '../components/ui/textarea';
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from '../components/ui/table';
 import type { KnowledgeBase } from '../types';
 
 interface KBDocument {
@@ -93,34 +102,28 @@ function CreateKBModal({ onClose, onCreate }: CreateKBModalProps) {
   const [description, setDescription] = useState('');
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h2 className="text-base font-semibold text-slate-800">New Knowledge Base</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition">✕</button>
-        </div>
-        <form onSubmit={e => { e.preventDefault(); if (name.trim()) { onCreate(name.trim(), description.trim()); onClose(); } }} className="p-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Name</label>
-            <input autoFocus value={name} onChange={e => setName(e.target.value)} placeholder="Product Documentation"
-              className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+    <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>New Knowledge Base</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={e => { e.preventDefault(); if (name.trim()) { onCreate(name.trim(), description.trim()); onClose(); } }} className="space-y-4 pt-2">
+          <div className="space-y-1.5">
+            <Label>Name</Label>
+            <Input autoFocus value={name} onChange={e => setName(e.target.value)} placeholder="Product Documentation" />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Description <span className="text-slate-400">(optional)</span></label>
-            <textarea value={description} onChange={e => setDescription(e.target.value)} rows={2}
-              placeholder="What kind of documents will this contain?"
-              className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 resize-none" />
+          <div className="space-y-1.5">
+            <Label>Description <span className="text-muted-foreground font-normal">(optional)</span></Label>
+            <Textarea value={description} onChange={e => setDescription(e.target.value)} rows={2}
+              placeholder="What kind of documents will this contain?" className="resize-none" />
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 text-sm text-slate-600 hover:text-slate-800 transition">Cancel</button>
-            <button type="submit" disabled={!name.trim()}
-              className="px-4 py-2 bg-accent-500 hover:bg-accent-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition">
-              Create
-            </button>
+            <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
+            <Button type="submit" disabled={!name.trim()}>Create</Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -156,14 +159,14 @@ function KBDetail({ kb, onBack, onAddDocs, onDeleteDoc, onAddUrl }: KBDetailProp
   return (
     <div className="animate-fade-in">
       <div className="mb-6">
-        <button onClick={onBack} className="text-sm text-slate-500 hover:text-slate-700 transition mb-3">← All Knowledge Bases</button>
+        <Button variant="ghost" size="sm" onClick={onBack} className="mb-3 h-auto py-1">← All Knowledge Bases</Button>
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-500 to-accent-700 rounded-lg flex items-center justify-center">
               <Database className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold text-slate-800">{kb.name}</h1>
+              <h1 className="text-xl font-semibold">{kb.name}</h1>
               <p className="text-sm text-slate-500">{kb.description}</p>
             </div>
           </div>
@@ -173,13 +176,13 @@ function KBDetail({ kb, onBack, onAddDocs, onDeleteDoc, onAddUrl }: KBDetailProp
 
       {/* Upload area */}
       <div
-        className="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center hover:border-accent-400 transition-colors cursor-pointer mb-6 group"
+        className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors cursor-pointer mb-6 group"
         onClick={() => fileRef.current?.click()}
         onDragOver={e => e.preventDefault()}
         onDrop={e => { e.preventDefault(); handleFiles(e.dataTransfer.files); }}
       >
-        <Upload className="w-8 h-8 text-slate-300 group-hover:text-accent-400 mx-auto mb-2 transition-colors" />
-        <p className="text-sm font-medium text-slate-600 group-hover:text-accent-600 transition-colors">Drop files here or click to upload</p>
+        <Upload className="w-8 h-8 text-muted-foreground/30 group-hover:text-primary/50 mx-auto mb-2 transition-colors" />
+        <p className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">Drop files here or click to upload</p>
         <p className="text-xs text-slate-400 mt-1">PDF, DOCX, TXT, Markdown — max 50 MB per file</p>
         <input ref={fileRef} type="file" multiple accept=".pdf,.docx,.txt,.md" className="hidden"
           onChange={e => handleFiles(e.target.files)} />
@@ -193,76 +196,74 @@ function KBDetail({ kb, onBack, onAddDocs, onDeleteDoc, onAddUrl }: KBDetailProp
               autoFocus value={urlInput} onChange={e => setUrlInput(e.target.value)}
               placeholder="https://docs.example.com/page"
               onKeyDown={e => { if (e.key === 'Enter') handleUrlAdd(); if (e.key === 'Escape') setShowUrlInput(false); }}
-              className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+              className="flex-1"
             />
-            <button onClick={handleUrlAdd} className="px-3 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-lg text-sm transition">Add URL</button>
-            <button onClick={() => setShowUrlInput(false)} className="px-3 py-2 text-slate-600 hover:text-slate-800 transition text-sm">Cancel</button>
+            <Button onClick={handleUrlAdd}>Add URL</Button>
+            <Button variant="ghost" onClick={() => setShowUrlInput(false)}>Cancel</Button>
           </div>
         ) : (
           <div className="flex items-center justify-between">
             <div className="relative flex-1 max-w-xs">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search documents…"
-                className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+              <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search documents…" className="pl-9" />
             </div>
-            <button onClick={() => setShowUrlInput(true)}
-              className="flex items-center gap-1.5 px-3 py-2 border border-slate-200 hover:border-slate-300 text-slate-600 hover:text-slate-800 rounded-lg text-sm transition">
+            <Button variant="outline" size="sm" onClick={() => setShowUrlInput(true)}>
               + Add URL
-            </button>
+            </Button>
           </div>
         )}
       </div>
 
       {/* Document list */}
-      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+      <Card>
         {filtered.length === 0 ? (
-          <div className="py-12 text-center text-slate-400 text-sm">
+          <CardContent className="py-12 text-center text-muted-foreground text-sm">
             {search ? 'No documents match your search.' : 'No documents yet. Upload files above.'}
-          </div>
+          </CardContent>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-slate-100 bg-slate-50">
-                <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Document</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Type</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Size</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Added</th>
-                <th className="px-4 py-3"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Document</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Size</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Added</TableHead>
+                <TableHead></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {filtered.map(doc => (
-                <tr key={doc.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3">
+                <TableRow key={doc.id}>
+                  <TableCell>
                     <div className="flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                      <span className="font-medium text-slate-800 truncate max-w-xs">{doc.name}</span>
+                      <FileText className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                      <span className="font-medium truncate max-w-xs">{doc.name}</span>
                     </div>
-                  </td>
-                  <td className="px-4 py-3">
+                  </TableCell>
+                  <TableCell>
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium uppercase ${docTypeColor[doc.type]}`}>{doc.type}</span>
-                  </td>
-                  <td className="px-4 py-3 text-slate-500 text-xs">{doc.size}</td>
-                  <td className="px-4 py-3">
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground">{doc.size}</TableCell>
+                  <TableCell>
                     <div className="flex items-center gap-1.5">
                       <StatusIcon status={doc.status} />
-                      <span className="text-xs text-slate-500 capitalize">{doc.status}</span>
+                      <span className="text-xs text-muted-foreground capitalize">{doc.status}</span>
                     </div>
-                  </td>
-                  <td className="px-4 py-3 text-slate-500 text-xs">{doc.addedAt}</td>
-                  <td className="px-4 py-3 text-right">
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground">{doc.addedAt}</TableCell>
+                  <TableCell className="text-right">
                     <button onClick={() => onDeleteDoc(kb.id, doc.id)}
-                      className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
+                      className="p-1.5 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-lg transition">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         )}
-      </div>
+      </Card>
     </div>
   );
 }
@@ -351,22 +352,19 @@ export function KnowledgeBasesPage() {
     <div className="animate-fade-in">
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-slate-800">Knowledge Bases</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Attach document collections to AI flows and assistants</p>
+          <h1 className="text-xl font-semibold">Knowledge Bases</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Attach document collections to AI flows and assistants</p>
         </div>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-lg text-sm font-medium transition"
-        >
-          <Plus className="w-4 h-4" />
+        <Button onClick={() => setShowCreateModal(true)}>
+          <Plus className="w-4 h-4 mr-2" />
           New Knowledge Base
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {kbs.map(kb => (
-          <div key={kb.id} className="bg-white rounded-lg border border-slate-200 overflow-hidden hover:shadow-sm transition-shadow">
-            <div className="p-4">
+          <Card key={kb.id} className="overflow-hidden hover:shadow-md transition-shadow">
+            <CardContent className="p-4">
               <div className="flex items-start justify-between mb-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-500 to-accent-700 rounded-lg flex items-center justify-center">
                   <Database className="w-5 h-5 text-white" />
@@ -379,27 +377,24 @@ export function KnowledgeBasesPage() {
                 <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" />{kb.documentsCount} documents</span>
                 <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />Updated {kb.lastUpdated}</span>
               </div>
-            </div>
+            </CardContent>
             <div className="px-4 pb-4 flex gap-2">
-              <button
-                onClick={() => setSelectedKBId(kb.id)}
-                className="flex-1 px-3 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-lg text-sm font-medium transition"
-              >
+              <Button className="flex-1" size="sm" onClick={() => setSelectedKBId(kb.id)}>
                 Manage Documents
-              </button>
+              </Button>
               <button
                 onClick={() => handleDelete(kb.id)}
-                className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
+                className="p-2 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-lg transition"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>
-          </div>
+          </Card>
         ))}
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="border-2 border-dashed border-slate-200 rounded-lg p-6 flex flex-col items-center justify-center gap-3 text-slate-400 hover:border-accent-400 hover:text-accent-500 transition-colors min-h-[180px]"
+          className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center justify-center gap-3 text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors min-h-[180px]"
         >
           <div className="w-10 h-10 rounded-lg border-2 border-dashed border-current flex items-center justify-center">
             <Plus className="w-5 h-5" />

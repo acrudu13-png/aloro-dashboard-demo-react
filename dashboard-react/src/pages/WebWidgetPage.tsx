@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Phone, PhoneOff, Mic, MicOff, Volume2, Settings2, Copy, Check, X } from 'lucide-react';
+import { Input } from '../components/ui/input';
+import { Textarea } from '../components/ui/textarea';
+import { Button } from '../components/ui/button';
+import { Card } from '../components/ui/card';
 
 interface WidgetConfig {
   primaryColor: string;
@@ -111,7 +115,7 @@ export function WebWidgetPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {/* Customization Panel */}
-        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+        <Card className="overflow-hidden">
           <div className="p-4 border-b border-slate-100 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-slate-700 flex items-center gap-2">
               <Settings2 className="w-4 h-4" />
@@ -126,7 +130,7 @@ export function WebWidgetPage() {
           </div>
 
           {showCustomizer && (
-            <div className="p-4 space-y-5">
+            <div className="p-4 space-y-5 overflow-hidden">
               {/* Primary Color */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -189,11 +193,9 @@ export function WebWidgetPage() {
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Widget Title
                 </label>
-                <input
-                  type="text"
+                <Input
                   value={config.title}
                   onChange={e => setConfig(c => ({ ...c, title: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
                 />
               </div>
 
@@ -202,11 +204,11 @@ export function WebWidgetPage() {
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Greeting Message
                 </label>
-                <textarea
+                <Textarea
                   value={config.greeting}
                   onChange={e => setConfig(c => ({ ...c, greeting: e.target.value }))}
                   rows={2}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 resize-none"
+                  className="resize-none"
                 />
               </div>
 
@@ -222,10 +224,10 @@ export function WebWidgetPage() {
               </label>
             </div>
           )}
-        </div>
+        </Card>
 
         {/* Embed Code */}
-        <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+        <Card className="overflow-hidden">
           <div className="p-4 border-b border-slate-100">
             <h2 className="text-sm font-semibold text-slate-700">Embed Code</h2>
           </div>
@@ -233,15 +235,16 @@ export function WebWidgetPage() {
             <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs overflow-x-auto font-mono whitespace-pre-wrap">
               {getEmbedCode()}
             </pre>
-            <button
+            <Button
+              variant="secondary"
               onClick={copyEmbedCode}
-              className="mt-3 w-full px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2"
+              className="mt-3 w-full"
             >
               {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
               {copied ? 'Copied!' : 'Copy to Clipboard'}
-            </button>
+            </Button>
           </div>
-        </div>
+        </Card>
       </div>
 
       {/* Demo Widget - positioned fixed */}

@@ -1,6 +1,14 @@
 import { useState } from 'react';
 import { Plus, Zap, Trash2, Code2, Ticket, Globe, Database, Bell, ChevronDown, ChevronRight, Copy } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
+import { Button } from '../components/ui/button';
+import { Card, CardContent } from '../components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Textarea } from '../components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 
 type ToolCategory = 'api' | 'crm' | 'ticketing' | 'notification' | 'data';
 
@@ -236,108 +244,100 @@ function ToolModal({ tool, onClose, onSave }: ToolModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h2 className="text-base font-semibold text-slate-800">{tool ? 'Edit Tool' : 'New Tool'}</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition">✕</button>
-        </div>
+    <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
+      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0">
+        <DialogHeader className="px-6 py-4 border-b">
+          <DialogTitle>{tool ? 'Edit Tool' : 'New Tool'}</DialogTitle>
+        </DialogHeader>
 
-        <div className="flex border-b border-slate-100 px-6">
-          {tabs.map(t => (
-            <button key={t.id} onClick={() => setTab(t.id)}
-              className={`px-4 py-3 text-sm font-medium border-b-2 transition -mb-px ${tab === t.id ? 'border-accent-500 text-accent-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>
-              {t.label}
-            </button>
-          ))}
-        </div>
+        <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)} className="flex flex-col flex-1 overflow-hidden">
+          <TabsList className="border-b rounded-none bg-transparent h-auto px-6 justify-start gap-0 pb-0">
+            {tabs.map(t => (
+              <TabsTrigger key={t.id} value={t.id}
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 text-sm">
+                {t.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
-          {tab === 'general' && (
-            <>
+          <div className="flex-1 overflow-y-auto">
+          <TabsContent value="general" className="mt-0 p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">Tool Name</label>
-                <input autoFocus value={name} onChange={e => setName(e.target.value)} placeholder="Create Support Ticket"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500" />
+                <Input autoFocus value={name} onChange={e => setName(e.target.value)} placeholder="Create Support Ticket" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">Description</label>
-                <textarea value={description} onChange={e => setDescription(e.target.value)} rows={2}
-                  placeholder="What does this tool do? The AI will use this to decide when to call it."
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 resize-none" />
+                <Textarea value={description} onChange={e => setDescription(e.target.value)} rows={2}
+                  placeholder="What does this tool do? The AI will use this to decide when to call it." className="resize-none" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Category</label>
-                  <select value={category} onChange={e => setCategory(e.target.value as ToolCategory)}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white">
-                    {Object.entries(categoryMeta).map(([k, v]) => (
-                      <option key={k} value={k}>{v.label}</option>
-                    ))}
-                  </select>
+                  <Label>Category</Label>
+                  <Select value={category} onValueChange={(v) => setCategory(v as ToolCategory)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(categoryMeta).map(([k, v]) => (
+                        <SelectItem key={k} value={k}>{v.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">HTTP Method</label>
-                  <select value={method} onChange={e => setMethod(e.target.value as typeof method)}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 bg-white">
-                    {['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].map(m => <option key={m} value={m}>{m}</option>)}
-                  </select>
+                  <Label>HTTP Method</Label>
+                  <Select value={method} onValueChange={(v) => setMethod(v as Tool['method'])}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Endpoint URL</label>
-                <input value={url} onChange={e => setUrl(e.target.value)}
-                  placeholder="https://api.example.com/endpoint"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 font-mono" />
+                <Label>Endpoint URL</Label>
+                <Input value={url} onChange={e => setUrl(e.target.value)}
+                  placeholder="https://api.example.com/endpoint" className="font-mono" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Headers <span className="text-slate-400 font-normal">(JSON — use {'{{ENV_VAR}}'} for secrets)</span>
                 </label>
-                <textarea value={headers} onChange={e => setHeaders(e.target.value)} rows={4}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 resize-none font-mono" />
+                <Textarea value={headers} onChange={e => setHeaders(e.target.value)} rows={4} className="resize-none font-mono" />
               </div>
-            </>
-          )}
 
-          {tab === 'params' && (
-            <>
+          </TabsContent>
+
+          <TabsContent value="params" className="mt-0 p-6 space-y-4">
               <p className="text-sm text-slate-500">
                 Define the parameters the AI can pass to this tool. The AI will extract these from the conversation context.
               </p>
               <ParamEditor params={params} onChange={setParams} />
-            </>
-          )}
 
-          {tab === 'response' && (
-            <>
+          </TabsContent>
+
+          <TabsContent value="response" className="mt-0 p-6 space-y-4">
               <p className="text-sm text-slate-500">
                 Map response fields to conversation variables using JSONPath expressions. These variables will be available in subsequent flow nodes.
               </p>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                  Response Mapping <span className="text-slate-400 font-normal">(JSON)</span>
-                </label>
-                <textarea value={responseMapping} onChange={e => setResponseMapping(e.target.value)} rows={6}
-                  placeholder={'{\n  "ticketId": "$.data.id",\n  "ticketUrl": "$.data.url"\n}'}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 resize-none font-mono" />
+                <Label>Response Mapping <span className="text-muted-foreground font-normal">(JSON)</span></Label>
+                <Textarea value={responseMapping} onChange={e => setResponseMapping(e.target.value)} rows={6} placeholder={'{\"ticketId\": \"$.data.id\", \"ticketUrl\": \"$.data.url\"}' } className="resize-none font-mono" />
               </div>
               <div className="bg-blue-50 rounded-lg p-3 text-xs text-blue-700">
                 Mapped variables are injected into the AI context automatically. Example: if you map <code className="bg-blue-100 px-1 rounded">ticketId</code>, the AI can say "I created ticket #&#123;&#123;ticketId&#125;&#125; for you."
               </div>
-            </>
-          )}
-        </div>
+          </TabsContent>
+          </div>
+        </Tabs>
 
-        <div className="flex justify-end gap-3 px-6 py-4 border-t border-slate-100">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-slate-600 hover:text-slate-800 transition">Cancel</button>
-          <button onClick={handleSave} disabled={!name.trim() || !url.trim()}
-            className="px-4 py-2 bg-accent-500 hover:bg-accent-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition">
+        <DialogFooter className="px-6 py-4 border-t">
+          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+          <Button onClick={handleSave} disabled={!name.trim() || !url.trim()}>
             {tool ? 'Save Changes' : 'Create Tool'}
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -352,7 +352,7 @@ function ToolCard({ tool, onEdit, onDelete, onToggle }: {
   const copyUrl = () => navigator.clipboard.writeText(tool.url);
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+    <Card className="overflow-hidden">
       <div className="flex items-center gap-4 px-4 py-3">
         <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${color}`}>
           <Icon className="w-4.5 h-4.5" />
@@ -382,7 +382,7 @@ function ToolCard({ tool, onEdit, onDelete, onToggle }: {
       </div>
 
       {expanded && (
-        <div className="border-t border-slate-100 px-4 py-3 bg-slate-50 space-y-3">
+        <div className="border-t px-4 py-3 bg-muted/30 space-y-3">
           <div className="flex items-center gap-2">
             <span className="font-mono text-xs bg-orange-50 text-orange-700 px-1.5 py-0.5 rounded">{tool.method}</span>
             <span className="text-xs font-mono text-slate-600 truncate">{tool.url}</span>
@@ -417,7 +417,7 @@ function ToolCard({ tool, onEdit, onDelete, onToggle }: {
           )}
         </div>
       )}
-    </div>
+    </Card>
   );
 }
 
@@ -451,22 +451,19 @@ export function ToolsPage() {
     <div className="animate-fade-in">
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-slate-800">Tools</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Mid-conversation tools the AI can invoke — API calls, ticket creation, lookups</p>
+          <h1 className="text-xl font-semibold">Tools</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Mid-conversation tools the AI can invoke — API calls, ticket creation, lookups</p>
         </div>
-        <button
-          onClick={() => { setEditingTool(undefined); setShowModal(true); }}
-          className="flex items-center gap-2 px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-lg text-sm font-medium transition"
-        >
-          <Plus className="w-4 h-4" />
+        <Button onClick={() => { setEditingTool(undefined); setShowModal(true); }}>
+          <Plus className="w-4 h-4 mr-2" />
           New Tool
-        </button>
+        </Button>
       </div>
 
       {/* Category filter */}
       <div className="flex gap-2 mb-4 flex-wrap">
         <button onClick={() => setFilterCategory('all')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition ${filterCategory === 'all' ? 'bg-accent-500 text-white border-accent-500' : 'border-slate-200 text-slate-600 hover:border-slate-300'}`}>
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition ${filterCategory === 'all' ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:border-muted-foreground/50'}`}>
           All ({tools.length})
         </button>
         {Object.entries(categoryMeta).map(([k, v]) => {
@@ -474,7 +471,7 @@ export function ToolsPage() {
           if (count === 0) return null;
           return (
             <button key={k} onClick={() => setFilterCategory(k as ToolCategory)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition ${filterCategory === k ? 'bg-accent-500 text-white border-accent-500' : 'border-slate-200 text-slate-600 hover:border-slate-300'}`}>
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition ${filterCategory === k ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:border-muted-foreground/50'}`}>
               {v.label} ({count})
             </button>
           );
@@ -483,10 +480,10 @@ export function ToolsPage() {
 
       <div className="space-y-3">
         {filtered.length === 0 ? (
-          <div className="bg-white border border-slate-200 rounded-lg p-12 text-center">
+          <Card className="p-12 text-center"><CardContent className="pt-0">
             <Zap className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500 text-sm">No tools yet. Create one to let the AI call external services.</p>
-          </div>
+            <p className="text-muted-foreground text-sm">No tools yet. Create one to let the AI call external services.</p>
+          </CardContent></Card>
         ) : filtered.map(tool => (
           <ToolCard key={tool.id} tool={tool} onEdit={handleEdit} onDelete={handleDelete} onToggle={handleToggle} />
         ))}

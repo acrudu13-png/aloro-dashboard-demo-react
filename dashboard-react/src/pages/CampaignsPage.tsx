@@ -1,5 +1,7 @@
 import { Plus, Megaphone, Play, Pause, Calendar, Users, Phone, CheckCircle, UserPlus, TrendingUp } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
+import { Button } from '../components/ui/button';
+import { Card, CardContent } from '../components/ui/card';
 
 interface Campaign {
   id: string;
@@ -97,30 +99,27 @@ export function CampaignsPage() {
           <h1 className="text-xl font-semibold text-slate-800">Campaigns</h1>
           <p className="text-sm text-slate-500 mt-0.5">Outbound campaign management</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-lg text-sm font-medium transition">
+        <Button>
           <Plus className="w-4 h-4" />
           New Campaign
-        </button>
+        </Button>
       </div>
 
       {campaigns.length === 0 ? (
-        <div className="bg-white rounded-lg p-10 border border-slate-200 text-center">
-          <div className="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-            <Megaphone className="w-6 h-6 text-slate-400" />
-          </div>
-          <h3 className="text-base font-semibold text-slate-800 mb-1">No campaigns yet</h3>
-          <p className="text-sm text-slate-500 mb-5">Create and manage outbound calling campaigns</p>
-          <button className="bg-accent-500 hover:bg-accent-600 text-white px-5 py-2 rounded-lg text-sm font-medium transition">
-            Create Campaign
-          </button>
-        </div>
+        <Card>
+          <CardContent className="p-10 text-center">
+            <div className="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+              <Megaphone className="w-6 h-6 text-slate-400" />
+            </div>
+            <h3 className="text-base font-semibold text-slate-800 mb-1">No campaigns yet</h3>
+            <p className="text-sm text-slate-500 mb-5">Create and manage outbound calling campaigns</p>
+            <Button>Create Campaign</Button>
+          </CardContent>
+        </Card>
       ) : (
         <div className="space-y-4">
           {campaigns.map((campaign) => (
-            <div
-              key={campaign.id}
-              className="bg-white rounded-lg border border-slate-200 overflow-hidden hover:shadow-md transition-shadow"
-            >
+            <Card key={campaign.id} className="overflow-hidden hover:shadow-md transition-shadow">
               {/* Campaign Header */}
               <div className="p-4 lg:p-5 border-b border-slate-100">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -153,7 +152,7 @@ export function CampaignsPage() {
               </div>
 
               {/* Campaign Stats */}
-              <div className="p-4 lg:p-5">
+              <CardContent className="p-4 lg:p-5">
                 {/* Progress Bar */}
                 <div className="mb-4">
                   <div className="flex items-center justify-between text-sm mb-1.5">
@@ -233,8 +232,8 @@ export function CampaignsPage() {
                     </div>
                   </div>
                 )}
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}

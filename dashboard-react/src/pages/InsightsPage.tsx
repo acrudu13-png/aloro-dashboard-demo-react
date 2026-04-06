@@ -10,6 +10,11 @@ import {
   Legend,
 } from 'recharts';
 import { Calendar, ChevronDown, Zap, Timer, MessageSquare, Database } from 'lucide-react';
+import { Card, CardContent, CardHeader } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from '../components/ui/table';
 
 // Performance metrics data - last 14 days
 const performanceData = [
@@ -72,20 +77,20 @@ export function InsightsPage() {
     <div className="animate-fade-in">
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-slate-800">Call Insights</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Performance metrics and analytics</p>
+          <h1 className="text-xl font-semibold">Call Insights</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Performance metrics and analytics</p>
         </div>
         <div className="flex items-center gap-3">
           {/* Time Frame Selector */}
-          <div className="flex items-center bg-white border border-slate-200 rounded-lg p-1">
+          <div className="flex items-center bg-muted rounded-lg p-1">
             {(['7d', '30d', 'custom'] as TimeFrame[]).map(tf => (
               <button
                 key={tf}
                 onClick={() => setTimeFrame(tf)}
                 className={`px-3 py-1.5 text-xs font-medium rounded-md transition ${
                   timeFrame === tf
-                    ? 'bg-accent-500 text-white'
-                    : 'text-slate-600 hover:bg-slate-50'
+                    ? 'bg-background shadow text-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {tf === 'custom' ? 'Custom' : tf}
@@ -95,16 +100,17 @@ export function InsightsPage() {
 
           {/* Assistant Dropdown */}
           <div className="relative">
-            <button
+            <Button
+              variant="outline"
               onClick={() => setShowAssistantDropdown(!showAssistantDropdown)}
-              className="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 hover:bg-slate-50"
+              className="flex items-center gap-2 h-9 text-sm"
             >
               <Calendar className="w-4 h-4 text-slate-400" />
               {assistants.find(a => a.id === selectedAssistant)?.name}
               <ChevronDown className="w-4 h-4 text-slate-400" />
-            </button>
+            </Button>
             {showAssistantDropdown && (
-              <div className="absolute right-0 mt-1 w-48 bg-white border border-slate-200 rounded-lg shadow-lg z-10">
+              <div className="absolute right-0 mt-1 w-48 bg-background border rounded-lg shadow-lg z-10">
                 {assistants.map(assistant => (
                   <button
                     key={assistant.id}
@@ -128,7 +134,8 @@ export function InsightsPage() {
       {/* Stats Summary */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
         {stats.map((stat, i) => (
-          <div key={i} className="bg-white rounded-lg p-4 border border-slate-200">
+          <Card key={i}>
+            <CardContent className="p-4">
             <p className="text-xs text-slate-500 mb-1">{stat.label}</p>
             <div className="flex items-end justify-between">
               <span className="text-lg font-semibold text-slate-800">{stat.value}</span>
@@ -136,14 +143,15 @@ export function InsightsPage() {
                 {stat.change}
               </span>
             </div>
-          </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
       {/* Performance Metrics Chart */}
-      <div className="bg-white rounded-lg p-4 lg:p-5 border border-slate-200 mb-6">
+      <Card className="mb-6"><CardContent className="p-4 lg:p-5">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-semibold text-slate-700">Performance Metrics Over Time</h2>
+          <h2 className="text-sm font-semibold">Performance Metrics Over Time</h2>
         </div>
         
         {/* Metric Toggle Buttons */}
@@ -155,7 +163,7 @@ export function InsightsPage() {
               className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border transition ${
                 activeMetrics.includes(metric.key)
                   ? 'border-transparent text-white'
-                  : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                  : 'border-border text-muted-foreground hover:bg-muted'
               }`}
               style={activeMetrics.includes(metric.key) ? { backgroundColor: metric.color } : {}}
             >
@@ -197,44 +205,44 @@ export function InsightsPage() {
             </LineChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </CardContent></Card>
 
       {/* Detailed Metrics Table */}
-      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-        <div className="p-4 border-b border-slate-100">
-          <h2 className="text-sm font-semibold text-slate-700">Detailed Metrics</h2>
-        </div>
+      <Card>
+        <CardHeader className="p-4 pb-0 border-b">
+          <h2 className="text-sm font-semibold">Detailed Metrics</h2>
+        </CardHeader>
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-slate-50">
-              <tr>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">LLM TTFT</th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">TTS TTFB</th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">E2E Latency</th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tokens/Call</th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Cache %</th>
-              </tr>
-            </thead>
-            <tbody>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>LLM TTFT</TableHead>
+                <TableHead>TTS TTFB</TableHead>
+                <TableHead>E2E Latency</TableHead>
+                <TableHead>Tokens/Call</TableHead>
+                <TableHead>Cache %</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {performanceData.slice(-7).map((row, i) => (
-                <tr key={i} className="border-t border-slate-50">
-                  <td className="py-3 px-4 text-sm text-slate-700">{row.name}</td>
-                  <td className="py-3 px-4 text-sm text-slate-600">{row.llmTTFT}s</td>
-                  <td className="py-3 px-4 text-sm text-slate-600">{row.ttsTTFB}s</td>
-                  <td className="py-3 px-4 text-sm text-slate-600">{row.e2eLatency}s</td>
-                  <td className="py-3 px-4 text-sm text-slate-600">{row.tokensPerCall}</td>
-                  <td className="py-3 px-4 text-sm">
-                    <span className={`font-medium ${row.cachedPercent >= 40 ? 'text-green-600' : 'text-slate-600'}`}>
+                <TableRow key={i}>
+                  <TableCell className="text-sm">{row.name}</TableCell>
+                  <TableCell className="text-sm">{row.llmTTFT}s</TableCell>
+                  <TableCell className="text-sm">{row.ttsTTFB}s</TableCell>
+                  <TableCell className="text-sm">{row.e2eLatency}s</TableCell>
+                  <TableCell className="text-sm">{row.tokensPerCall}</TableCell>
+                  <TableCell className="text-sm">
+                    <span className={`font-medium ${row.cachedPercent >= 40 ? 'text-green-600' : 'text-muted-foreground'}`}>
                       {row.cachedPercent}%
                     </span>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

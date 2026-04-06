@@ -13,6 +13,7 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { Button } from '../ui/button';
 
 interface SidebarProps {
   currentPage: string;
@@ -86,46 +87,47 @@ export function Sidebar({ currentPage, onNavigate, isOpen, onClose }: SidebarPro
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed left-0 top-14 bottom-0 w-60 bg-white border-r border-slate-200 overflow-y-auto z-50',
+          'fixed left-0 top-14 bottom-0 w-60 bg-background border-r overflow-y-auto z-50',
           'transition-transform duration-300',
           'lg:translate-x-0',
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
         {/* Organization */}
-        <div className="p-4 border-b border-slate-100">
+        <div className="p-4 border-b">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-700 rounded-lg flex items-center justify-center">
               <MessageSquare className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-slate-800 truncate">Horeca Support</p>
-              <p className="text-xs text-slate-500">WhatsApp Chatbot</p>
+              <p className="text-sm font-semibold truncate">Horeca Support</p>
+              <p className="text-xs text-muted-foreground">WhatsApp Chatbot</p>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-400" />
+            <ChevronRight className="w-4 h-4 text-muted-foreground" />
           </div>
         </div>
 
         {/* Categorized Navigation */}
         <div className="py-3">
           {navCategories.map((category, catIndex) => (
-            <nav key={category.label} className={catIndex > 0 ? 'border-t border-slate-100 pt-3 mt-3' : ''}>
-              <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5 px-4">
+            <nav key={category.label} className={catIndex > 0 ? 'border-t pt-3 mt-3' : ''}>
+              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-4">
                 {category.label}
               </p>
               <ul className="space-y-0.5 px-2">
                 {category.items.map((item) => (
                   <li key={item.id}>
-                    <button
+                    <Button
+                      variant="ghost"
                       onClick={() => {
                         onNavigate(item.id);
                         onClose();
                       }}
                       className={cn(
-                        'sidebar-item w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors',
+                        'w-full justify-start gap-2.5 px-3 py-2 h-auto text-sm font-normal',
                         currentPage === item.id
-                          ? 'bg-accent-50 text-accent-700 font-medium'
-                          : 'text-slate-600 hover:bg-slate-50'
+                          ? 'bg-accent-50 text-accent-700 font-medium hover:bg-accent-50'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                       )}
                     >
                       <item.icon className="w-4 h-4 flex-shrink-0" />
@@ -135,7 +137,7 @@ export function Sidebar({ currentPage, onNavigate, isOpen, onClose }: SidebarPro
                           {item.badge}
                         </span>
                       )}
-                    </button>
+                    </Button>
                   </li>
                 ))}
               </ul>

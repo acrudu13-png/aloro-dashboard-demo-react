@@ -5,6 +5,9 @@ import {
   Play, Pause, Volume2, Mic,
 } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
+import { Card, CardContent } from '../components/ui/card';
+import { Input } from '../components/ui/input';
+import { Button } from '../components/ui/button';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -646,12 +649,13 @@ function ConversationDetail({ conv, onBack }: { conv: Conversation; onBack: () =
 
   return (
     <div className="animate-fade-in">
-      <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition mb-4">
+      <Button variant="ghost" size="sm" onClick={onBack} className="flex items-center gap-1.5 text-sm mb-4 h-auto py-1">
         <ChevronLeft className="w-4 h-4" /> Toate Conversatiile
-      </button>
+      </Button>
 
       {/* Header */}
-      <div className="bg-white border border-slate-200 rounded-lg p-4 mb-4">
+      <Card className="mb-4">
+        <CardContent className="p-4">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
@@ -701,7 +705,8 @@ function ConversationDetail({ conv, onBack }: { conv: Conversation; onBack: () =
             <p className="text-sm font-medium text-slate-700">{conv.messages.length}</p>
           </div>
         </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Transcript */}
       <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 max-h-[600px] overflow-y-auto">
@@ -756,8 +761,8 @@ export function ConversationsPage() {
   return (
     <div className="animate-fade-in">
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-slate-800">Conversatii</h1>
-        <p className="text-sm text-slate-500 mt-0.5">Istoric conversatii WhatsApp pe toti agentii</p>
+        <h1 className="text-xl font-semibold">Conversatii</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">Istoric conversatii WhatsApp pe toti agentii</p>
       </div>
 
       {/* Stats */}
@@ -768,10 +773,12 @@ export function ConversationsPage() {
           { label: 'Escalate', value: escalated, color: 'text-red-600' },
           { label: 'Activ / Astept.', value: `${active} / ${waiting}`, color: 'text-blue-700' },
         ].map(s => (
-          <div key={s.label} className="bg-white rounded-lg border border-slate-200 px-4 py-3">
+          <Card key={s.label}>
+            <CardContent className="px-4 py-3">
             <p className="text-xs text-slate-500 mb-1">{s.label}</p>
             <p className={`text-xl font-semibold ${s.color}`}>{s.value}</p>
-          </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
@@ -779,11 +786,11 @@ export function ConversationsPage() {
       <div className="flex flex-wrap gap-2 mb-4">
         <div className="relative flex-1 min-w-48 max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input
+          <Input
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Cauta dupa nume, telefon, tichet…"
-            className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+            className="pl-9"
           />
         </div>
         <div className="flex items-center gap-1.5">
@@ -792,7 +799,7 @@ export function ConversationsPage() {
             <button
               key={s}
               onClick={() => setFilterStatus(s)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition capitalize ${filterStatus === s ? 'bg-accent-500 text-white border-accent-500' : 'border-slate-200 text-slate-600 hover:border-slate-300'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition capitalize ${filterStatus === s ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:border-muted-foreground/50'}`}
             >
               {s === 'all' ? 'Toti' : statusConfig[s].label}
             </button>
@@ -803,10 +810,12 @@ export function ConversationsPage() {
       {/* List */}
       <div className="space-y-2">
         {filtered.length === 0 && (
-          <div className="bg-white border border-slate-200 rounded-lg py-16 text-center">
+          <Card className="py-16 text-center">
+            <CardContent className="pt-0">
             <MessageSquare className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500 text-sm">Nu exista conversatii care sa se potriveasca cu filtrele.</p>
-          </div>
+            <p className="text-muted-foreground text-sm">Nu exista conversatii care sa se potriveasca cu filtrele.</p>
+            </CardContent>
+          </Card>
         )}
         {filtered.map(conv => {
           const { label: statusLabel, variant, icon: StatusIcon } = statusConfig[conv.status];

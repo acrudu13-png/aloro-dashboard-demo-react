@@ -1,20 +1,10 @@
-import { useState } from 'react';
 import { MessageSquare } from 'lucide-react';
 import { FlowsTab } from './tabs/FlowsTab';
 import { SendersTab } from './tabs/SendersTab';
 import { TemplatesTab } from './tabs/TemplatesTab';
-
-type Tab = 'flows' | 'senders' | 'templates';
-
-const tabs: { id: Tab; label: string }[] = [
-  { id: 'flows', label: 'Flows' },
-  { id: 'senders', label: 'Senders' },
-  { id: 'templates', label: 'Templates' },
-];
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 export function WhatsAppPage() {
-  const [activeTab, setActiveTab] = useState<Tab>('flows');
-
   return (
     <div className="animate-fade-in">
       <div className="mb-6 flex items-center gap-3">
@@ -27,25 +17,29 @@ export function WhatsAppPage() {
         </div>
       </div>
 
-      <div className="flex border-b border-slate-200 mb-6">
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-5 py-3 text-sm font-medium border-b-2 transition -mb-px ${
-              activeTab === tab.id
-                ? 'border-accent-500 text-accent-600'
-                : 'border-transparent text-slate-500 hover:text-slate-700'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <Tabs defaultValue="flows">
+        <TabsList className="border-b border-slate-200 rounded-none bg-transparent h-auto px-0 justify-start gap-0 pb-0 mb-6 w-full">
+          <TabsTrigger value="flows" className="rounded-none border-b-2 border-transparent data-[state=active]:border-accent-500 data-[state=active]:text-accent-600 data-[state=active]:bg-transparent px-5 py-3 text-sm font-medium text-slate-500 hover:text-slate-700 transition -mb-px">
+            Flows
+          </TabsTrigger>
+          <TabsTrigger value="senders" className="rounded-none border-b-2 border-transparent data-[state=active]:border-accent-500 data-[state=active]:text-accent-600 data-[state=active]:bg-transparent px-5 py-3 text-sm font-medium text-slate-500 hover:text-slate-700 transition -mb-px">
+            Senders
+          </TabsTrigger>
+          <TabsTrigger value="templates" className="rounded-none border-b-2 border-transparent data-[state=active]:border-accent-500 data-[state=active]:text-accent-600 data-[state=active]:bg-transparent px-5 py-3 text-sm font-medium text-slate-500 hover:text-slate-700 transition -mb-px">
+            Templates
+          </TabsTrigger>
+        </TabsList>
 
-      {activeTab === 'flows' && <FlowsTab />}
-      {activeTab === 'senders' && <SendersTab />}
-      {activeTab === 'templates' && <TemplatesTab />}
+        <TabsContent value="flows" className="mt-0">
+          <FlowsTab />
+        </TabsContent>
+        <TabsContent value="senders" className="mt-0">
+          <SendersTab />
+        </TabsContent>
+        <TabsContent value="templates" className="mt-0">
+          <TemplatesTab />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

@@ -17,6 +17,12 @@ import {
   Send,
 } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from '../components/ui/table';
+import { Card } from '../components/ui/card';
 
 interface WhatsAppCustomer {
   id: string;
@@ -154,29 +160,26 @@ export function CustomersPage() {
     <div className="animate-fade-in">
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-slate-800">Customers</h1>
-          <p className="text-sm text-slate-500 mt-0.5">{sortedCustomers.length} customers in database</p>
+          <h1 className="text-xl font-semibold">Customers</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{sortedCustomers.length} customers in database</p>
         </div>
         <div className="flex items-center gap-2">
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-sm font-medium transition">
-            <Upload className="w-4 h-4" />
+          <Button variant="outline">
+            <Upload className="w-4 h-4 mr-2" />
             Import CSV
-          </button>
-          <button 
-            onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-lg text-sm font-medium transition"
-          >
-            <Download className="w-4 h-4" />
+          </Button>
+          <Button onClick={handleExport}>
+            <Download className="w-4 h-4 mr-2" />
             Export CSV
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Search Bar */}
       <div className="mb-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
-          <input
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
             type="text"
             placeholder="Search by name, phone, or email..."
             value={searchQuery}
@@ -184,88 +187,80 @@ export function CustomersPage() {
               setSearchQuery(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full bg-white border border-slate-200 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
+            className="pl-10"
           />
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+      <Card className="overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-slate-50">
-              <tr>
-                <th 
-                  className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="cursor-pointer hover:bg-muted/50"
                   onClick={() => handleSort('name')}
                 >
                   <div className="flex items-center gap-1">
                     Name <SortIcon columnKey="name" />
                   </div>
-                </th>
-                <th 
-                  className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+                </TableHead>
+                <TableHead className="cursor-pointer hover:bg-muted/50"
                   onClick={() => handleSort('phone')}
                 >
                   <div className="flex items-center gap-1">
                     Phone <SortIcon columnKey="phone" />
                   </div>
-                </th>
-                <th 
-                  className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+                </TableHead>
+                <TableHead className="cursor-pointer hover:bg-muted/50"
                   onClick={() => handleSort('email')}
                 >
                   <div className="flex items-center gap-1">
                     Email <SortIcon columnKey="email" />
                   </div>
-                </th>
-                <th 
-                  className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+                </TableHead>
+                <TableHead className="cursor-pointer hover:bg-muted/50"
                   onClick={() => handleSort('totalMessages')}
                 >
                   <div className="flex items-center gap-1">
                     Messages <SortIcon columnKey="totalMessages" />
                   </div>
-                </th>
-                <th 
-                  className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+                </TableHead>
+                <TableHead className="cursor-pointer hover:bg-muted/50"
                   onClick={() => handleSort('conversations')}
                 >
                   <div className="flex items-center gap-1">
                     Conversations <SortIcon columnKey="conversations" />
                   </div>
-                </th>
-                <th 
-                  className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+                </TableHead>
+                <TableHead className="cursor-pointer hover:bg-muted/50"
                   onClick={() => handleSort('avgResponseTime')}
                 >
                   <div className="flex items-center gap-1">
                     Avg Response <SortIcon columnKey="avgResponseTime" />
                   </div>
-                </th>
-                <th 
-                  className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+                </TableHead>
+                <TableHead className="cursor-pointer hover:bg-muted/50"
                   onClick={() => handleSort('lastMessage')}
                 >
                   <div className="flex items-center gap-1">
                     Last Message <SortIcon columnKey="lastMessage" />
                   </div>
-                </th>
-                <th 
-                  className="text-left py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+                </TableHead>
+                <TableHead className="cursor-pointer hover:bg-muted/50"
                   onClick={() => handleSort('status')}
                 >
                   <div className="flex items-center gap-1">
                     Status <SortIcon columnKey="status" />
                   </div>
-                </th>
-                <th className="w-12"></th>
-              </tr>
-            </thead>
-            <tbody>
+                </TableHead>
+                <TableHead className="w-12"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {paginatedCustomers.map(customer => (
-                <tr key={customer.id} className="border-t border-slate-50 hover:bg-slate-50">
-                  <td className="py-3 px-4">
+                <TableRow key={customer.id} className="hover:bg-muted/30">
+                  <TableCell>
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center">
                         {customer.name ? (
@@ -280,14 +275,14 @@ export function CustomersPage() {
                         {customer.name ?? <span className="text-slate-400 italic">Unknown</span>}
                       </span>
                     </div>
-                  </td>
-                  <td className="py-3 px-4">
+                  </TableCell>
+                  <TableCell>
                     <div className="flex items-center gap-1.5 text-sm text-slate-600">
                       <MessageSquare className="w-3.5 h-3.5 text-slate-400" />
                       {customer.phone}
                     </div>
-                  </td>
-                  <td className="py-3 px-4">
+                  </TableCell>
+                  <TableCell>
                     {customer.email ? (
                       <div className="flex items-center gap-1.5 text-sm text-slate-600">
                         <Mail className="w-3.5 h-3.5 text-slate-400" />
@@ -296,10 +291,10 @@ export function CustomersPage() {
                     ) : (
                       <span className="text-slate-300">-</span>
                     )}
-                  </td>
-                  <td className="py-3 px-4 text-sm text-slate-600">{customer.totalMessages}</td>
-                  <td className="py-3 px-4 text-sm text-slate-600">{customer.conversations}</td>
-                  <td className="py-3 px-4">
+                  </TableCell>
+                  <TableCell className="text-sm text-slate-600">{customer.totalMessages}</TableCell>
+                  <TableCell className="text-sm text-slate-600">{customer.conversations}</TableCell>
+                  <TableCell>
                     <span className={`text-sm font-medium ${
                       customer.avgResponseTime === '-' ? 'text-slate-400' :
                       parseFloat(customer.avgResponseTime) < 2 ? 'text-green-600' :
@@ -308,14 +303,14 @@ export function CustomersPage() {
                     }`}>
                       {customer.avgResponseTime}
                     </span>
-                  </td>
-                  <td className="py-3 px-4 text-sm text-slate-500">{customer.lastMessage}</td>
-                  <td className="py-3 px-4">
+                  </TableCell>
+                  <TableCell className="text-sm text-slate-500">{customer.lastMessage}</TableCell>
+                  <TableCell>
                     <Badge variant={statusConfig[customer.status].variant}>
                       {statusConfig[customer.status].label}
                     </Badge>
-                  </td>
-                  <td className="py-3 px-4 relative">
+                  </TableCell>
+                  <TableCell className="relative">
                     <button 
                       onClick={() => setShowActions(showActions === customer.id ? null : customer.id)}
                       className="p-1 text-slate-400 hover:text-slate-600"
@@ -323,7 +318,7 @@ export function CustomersPage() {
                       <MoreHorizontal className="w-4 h-4" />
                     </button>
                     {showActions === customer.id && (
-                      <div className="absolute right-4 top-full mt-1 w-44 bg-white border border-slate-200 rounded-lg shadow-lg z-10">
+                      <div className="absolute right-4 top-full mt-1 w-44 bg-background border rounded-lg shadow-lg z-10">
                         <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">
                           <Send className="w-4 h-4" />
                           Send Message
@@ -345,58 +340,62 @@ export function CustomersPage() {
                         )}
                       </div>
                     )}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
               {paginatedCustomers.length === 0 && (
-                <tr>
-                  <td colSpan={9} className="py-10 text-center text-slate-500">
+                <TableRow>
+                  <TableCell colSpan={9} className="py-10 text-center text-muted-foreground">
                     No customers found
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100">
+          <div className="flex items-center justify-between px-4 py-3 border-t">
             <p className="text-sm text-slate-500">
               Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1} to {Math.min(currentPage * ITEMS_PER_PAGE, sortedCustomers.length)} of {sortedCustomers.length}
             </p>
             <div className="flex items-center gap-1">
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="p-2 text-slate-400 hover:text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="h-8 w-8"
               >
                 <ChevronLeft className="w-4 h-4" />
-              </button>
+              </Button>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                 <button
                   key={page}
                   onClick={() => setCurrentPage(page)}
                   className={`w-8 h-8 rounded text-sm font-medium transition ${
                     currentPage === page
-                      ? 'bg-accent-500 text-white'
-                      : 'text-slate-600 hover:bg-slate-100'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-muted-foreground hover:bg-muted'
                   }`}
                 >
                   {page}
                 </button>
               ))}
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="p-2 text-slate-400 hover:text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="h-8 w-8"
               >
                 <ChevronRight className="w-4 h-4" />
-              </button>
+              </Button>
             </div>
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

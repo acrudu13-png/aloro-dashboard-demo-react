@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { Phone, ChevronRight, Filter } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Card } from '../components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 
 // Mock data
 const mockCalls = [
@@ -28,10 +32,10 @@ export function CallsPage() {
           <h1 className="text-xl font-semibold text-slate-800">Calls</h1>
           <p className="text-sm text-slate-500 mt-0.5">View and manage all call history</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-600 hover:bg-slate-50">
+        <Button variant="outline">
           <Filter className="w-4 h-4" />
           Filters
-        </button>
+        </Button>
       </div>
 
       {/* Stats */}
@@ -43,23 +47,19 @@ export function CallsPage() {
           { label: 'Failed', value: '36' },
           { label: 'Avg Duration', value: '3:42' },
         ].map((stat, i) => (
-          <div key={i} className="bg-white rounded-lg p-4 border border-slate-200">
+          <Card key={i} className="p-4">
             <p className="text-xs text-slate-500 font-medium">{stat.label}</p>
             <p className="text-xl font-semibold text-slate-800 mt-1">{stat.value}</p>
-          </div>
+          </Card>
         ))}
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg p-4 border border-slate-200 mb-5">
+      <Card className="p-4 mb-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           <div>
             <label className="block text-xs font-medium text-slate-500 mb-1">Search</label>
-            <input
-              type="text"
-              placeholder="Phone number..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm"
-            />
+            <Input placeholder="Phone number..." />
           </div>
           <div>
             <label className="block text-xs font-medium text-slate-500 mb-1">Assistant</label>
@@ -97,56 +97,54 @@ export function CallsPage() {
             </select>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Table */}
-      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-        <div className="table-responsive">
-          <table className="w-full">
-            <thead className="bg-slate-50">
-              <tr>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-8"></th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Phone</th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Assistant</th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Duration</th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Outcome</th>
-                <th className="text-left py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {mockCalls.map((call) => (
-                <tr
-                  key={call.id}
-                  className="border-t border-slate-50 cursor-pointer hover:bg-slate-50"
-                  onClick={() => setExpandedCall(expandedCall === call.id ? null : call.id)}
-                >
-                  <td className="py-3 px-4">
-                    <ChevronRight
-                      className={`w-3 h-3 text-slate-300 transition-transform ${
-                        expandedCall === call.id ? 'rotate-90' : ''
-                      }`}
-                    />
-                  </td>
-                  <td className="py-3 px-4">
-                    <Badge variant={call.status === 'completed' ? 'success' : 'default'}>
-                      {call.status === 'completed' ? 'Completed' : 'No Answer'}
-                    </Badge>
-                  </td>
-                  <td className="py-3 px-4 text-sm text-slate-700">{call.phone}</td>
-                  <td className="py-3 px-4 text-sm text-accent-600 font-medium">{call.assistant}</td>
-                  <td className="py-3 px-4 text-sm text-slate-700">{call.duration}</td>
-                  <td className="py-3 px-4">
-                    <Badge variant={outcomeConfig[call.outcome]?.variant || 'default'}>
-                      {outcomeConfig[call.outcome]?.label || call.outcome}
-                    </Badge>
-                  </td>
-                  <td className="py-3 px-4 text-sm text-slate-500">{call.date}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      <Card className="overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-8"></TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead>Assistant</TableHead>
+              <TableHead>Duration</TableHead>
+              <TableHead>Outcome</TableHead>
+              <TableHead>Date</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {mockCalls.map((call) => (
+              <TableRow
+                key={call.id}
+                className="cursor-pointer hover:bg-slate-50"
+                onClick={() => setExpandedCall(expandedCall === call.id ? null : call.id)}
+              >
+                <TableCell>
+                  <ChevronRight
+                    className={`w-3 h-3 text-slate-300 transition-transform ${
+                      expandedCall === call.id ? 'rotate-90' : ''
+                    }`}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Badge variant={call.status === 'completed' ? 'success' : 'default'}>
+                    {call.status === 'completed' ? 'Completed' : 'No Answer'}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-sm text-slate-700">{call.phone}</TableCell>
+                <TableCell className="text-sm text-accent-600 font-medium">{call.assistant}</TableCell>
+                <TableCell className="text-sm text-slate-700">{call.duration}</TableCell>
+                <TableCell>
+                  <Badge variant={outcomeConfig[call.outcome]?.variant || 'default'}>
+                    {outcomeConfig[call.outcome]?.label || call.outcome}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-sm text-slate-500">{call.date}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
         <div className="px-4 py-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
           <p className="text-sm text-slate-500">Showing 4 of 1,247 calls</p>
           <div className="flex items-center gap-1">
@@ -158,7 +156,7 @@ export function CallsPage() {
             <button className="px-2.5 py-1 text-sm text-slate-500 hover:bg-white rounded">3</button>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

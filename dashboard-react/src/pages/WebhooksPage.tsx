@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { Plus, Webhook, Trash2, Play, CheckCircle, XCircle, Clock, ChevronDown, ChevronRight, Copy } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
+import { Button } from '../components/ui/button';
+import { Card, CardContent } from '../components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 import type { Webhook as WebhookType } from '../types';
 
 const ALL_EVENTS = [
@@ -82,47 +87,43 @@ function WebhookModal({ webhook, onClose, onSave }: WebhookModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h2 className="text-base font-semibold text-slate-800">{webhook ? 'Edit Webhook' : 'New Webhook'}</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition">✕</button>
-        </div>
+    <Dialog open={true} onOpenChange={(open) => { if (!open) onClose(); }}>
+      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0">
+        <DialogHeader className="px-6 py-4 border-b">
+          <DialogTitle>{webhook ? 'Edit Webhook' : 'New Webhook'}</DialogTitle>
+        </DialogHeader>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-5">
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Name</label>
-              <input
+              <Label>Name</Label>
+              <Input
                 autoFocus value={name} onChange={e => setName(e.target.value)}
                 placeholder="CRM Sync"
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500"
               />
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Endpoint URL</label>
-              <input
+              <Label>Endpoint URL</Label>
+              <Input
                 value={url} onChange={e => setUrl(e.target.value)}
                 placeholder="https://your-server.com/webhook"
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 font-mono"
+                className="font-mono"
               />
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                Secret <span className="text-slate-400 font-normal">(optional — used to sign payloads)</span>
-              </label>
-              <input
+              <Label>Secret <span className="text-muted-foreground font-normal">(optional — used to sign payloads)</span></Label>
+              <Input
                 value={secret} onChange={e => setSecret(e.target.value)}
                 placeholder="whsec_…"
                 type="password"
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent-500 font-mono"
+                className="font-mono"
               />
             </div>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              Events to subscribe <span className="text-slate-400 font-normal">({selectedEvents.length} selected)</span>
+              Events to subscribe <span className="text-muted-foreground font-normal">({selectedEvents.length} selected)</span>
             </label>
             <div className="border border-slate-200 rounded-lg overflow-hidden divide-y divide-slate-100">
               {ALL_EVENTS.map(({ group, events }) => {
@@ -167,18 +168,14 @@ function WebhookModal({ webhook, onClose, onSave }: WebhookModalProps) {
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 px-6 py-4 border-t border-slate-100">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-slate-600 hover:text-slate-800 transition">Cancel</button>
-          <button
-            onClick={handleSave}
-            disabled={!name.trim() || !url.trim()}
-            className="px-4 py-2 bg-accent-500 hover:bg-accent-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition"
-          >
+        <DialogFooter className="px-6 py-4 border-t">
+          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+          <Button onClick={handleSave} disabled={!name.trim() || !url.trim()}>
             {webhook ? 'Save Changes' : 'Create Webhook'}
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -211,7 +208,7 @@ function WebhookRow({ webhook, onDelete, onTest, onEdit }: {
   const copyUrl = () => navigator.clipboard.writeText(webhook.url);
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+    <Card className="overflow-hidden">
       <div className="flex items-center gap-4 px-4 py-3">
         <div className="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0">
           <Webhook className="w-4.5 h-4.5 text-slate-500" />
@@ -254,7 +251,7 @@ function WebhookRow({ webhook, onDelete, onTest, onEdit }: {
       </div>
 
       {expanded && (
-        <div className="border-t border-slate-100 px-4 py-3 bg-slate-50 space-y-3">
+        <div className="border-t px-4 py-3 bg-muted/30 space-y-3">
           <div>
             <p className="text-xs font-medium text-slate-600 mb-1.5">Subscribed events</p>
             <div className="flex flex-wrap gap-1.5">
@@ -287,7 +284,7 @@ function WebhookRow({ webhook, onDelete, onTest, onEdit }: {
           </div>
         </div>
       )}
-    </div>
+    </Card>
   );
 }
 
@@ -318,23 +315,22 @@ export function WebhooksPage() {
     <div className="animate-fade-in">
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-slate-800">Webhooks</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Receive real-time event notifications at your endpoints</p>
+          <h1 className="text-xl font-semibold">Webhooks</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Receive real-time event notifications at your endpoints</p>
         </div>
-        <button
-          onClick={() => { setEditingWebhook(undefined); setShowModal(true); }}
-          className="flex items-center gap-2 px-4 py-2 bg-accent-500 hover:bg-accent-600 text-white rounded-lg text-sm font-medium transition"
-        >
-          <Plus className="w-4 h-4" />
+        <Button onClick={() => { setEditingWebhook(undefined); setShowModal(true); }}>
+          <Plus className="w-4 h-4 mr-2" />
           New Webhook
-        </button>
+        </Button>
       </div>
 
       {webhooks.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-lg p-12 text-center">
-          <Webhook className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500 text-sm">No webhooks yet. Create one to start receiving events.</p>
-        </div>
+        <Card>
+          <CardContent className="p-12 text-center">
+          <Webhook className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+          <p className="text-muted-foreground text-sm">No webhooks yet. Create one to start receiving events.</p>
+          </CardContent>
+        </Card>
       ) : (
         <div className="space-y-3">
           {webhooks.map(wh => (
